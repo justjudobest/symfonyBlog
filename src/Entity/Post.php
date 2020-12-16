@@ -38,7 +38,7 @@ class Post
     private $subheadline;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="string", length=255)
      */
     private $description;
 

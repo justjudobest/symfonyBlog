@@ -55,15 +55,18 @@
                         <table>
                             <tr>
                                 <th><a href="">title</a></th>
+                                <th><a href="">created</a></th>
+                                <th><a href="">updated</a></th>
+
                                 <th>Fast edit</th>
                                 <th>Delete</th>
 
                             </tr>
                             {% for category in categories %}
-                                <tr>
+                            <tr>
                                     <td><a href="{{ path('category_edit', {'id': category.id}) }}">{{ category.name }}</a></td>
-                                    {{ dump(category) }}
-{#                                    <td><a href="{{ path('post_edit', {'id': post.id}) }}">{{ post.title }}</a></td>#}
+                                    <td><a href="">{{ category.created }}</a></td>
+                                   <td><a href="">{{ category.updated }}</a></td>
 
 
 

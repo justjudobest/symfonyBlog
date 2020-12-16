@@ -45,21 +45,28 @@
                                                 </form>
                                             </td>
                                         </tr>
+
                                     {% else %}
                                         <tr>
                                             <td colspan="3">no records found</td>
                                         </tr>
 
                                     {% endfor %}
+
+
                                 </table>
 
                                 {% if previous >= 0 %}
+
                                         <a href="{{ path('post_index', {paged: previous}) }}">Previous</a>
+
                                 {% endif %}
 
                                 {% if next < posts|length %}
                                         <a href="{{ path('post_index', {paged: next}) }}">Next</a>
                                 {% endif %}
+
+
 
 
 
