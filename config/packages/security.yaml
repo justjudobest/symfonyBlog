@@ -1,0 +1,39 @@
+security:
+
+    encoders:
+        App\Entity\AdminUser:
+            algorithm: auto
+
+
+    providers:
+
+        # used to reload user from session & other features (e.g. switch_user)
+        app_user_provider:
+            entity:
+                class: App\Entity\AdminUser
+                property: email
+
+
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            anonymous: ~
+            provider: app_user_provider
+            guard:
+                authenticators:
+                    - App\Security\AppCustomAuthenticator
+            logout:
+                path: app_logout
+                target: /login
+                # where to redirect after logout
+                # target: app_any_route
+
+
+    access_control:
+
+        - { path: ^/admin, roles: ROLE_ADMIN }
+
+

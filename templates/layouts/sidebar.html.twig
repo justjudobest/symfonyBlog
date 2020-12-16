@@ -1,0 +1,87 @@
+<div class="sidebar" data-color="rose" data-background-color="black" data-image="../../assets/img/sidebar-1.jpg">
+    <!--
+      Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+
+      Tip 2: you can also add an image using data-image tag
+  -->
+    <div class="logo"><a href="http://www.creative-tim.com" class="simple-text logo-mini">
+
+        </a>
+        <a href="http://www.creative-tim.com" class="simple-text logo-normal">
+
+        </a></div>
+    <div class="sidebar-wrapper">
+        <div class="user">
+            <div class="photo">
+                <img src="../../assets/img/faces/yes.jpg" />
+            </div>
+            <div class="user-info">
+                <a data-toggle="collapse" href="#collapseExample" class="username">
+
+
+              <span>
+                {{ app.user.username }}
+                <b class="caret"></b>
+              </span>
+                </a>
+                <div class="collapse" id="collapseExample">
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <span class="sidebar-mini"> EP </span>
+                                <span class="sidebar-normal"> Edit Profile </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            {% if app.user %}
+                            <a class="nav-link" href="{{ path('app_logout') }}">
+                                <span class="sidebar-mini"> L </span>
+                                <span class="sidebar-normal"> Logout </span>
+                            </a>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <ul class="nav">
+            <li class="nav-item ">
+                <a class="nav-link" href="/admin">
+                    <i class="material-icons">dashboard</i>
+                    <p> Dashboard </p>
+                </a>
+            </li>
+
+            <li class="nav-item ">
+
+                <a class="nav-link" href="/admin/post">
+                    <p> Posts </p>
+                </a>
+
+            </li>
+
+            <li class="nav-item ">
+
+                <a class="nav-link" href="/admin/user">
+                    <p> Users </p>
+                </a>
+
+            </li>
+
+            <li class="nav-item ">
+
+                <a class="nav-link" href="/admin/category">
+                    <p> Categories </p>
+                </a>
+
+            </li>
+
+
+
+
+
+
+
+        </ul>
+    </div>
+</div>

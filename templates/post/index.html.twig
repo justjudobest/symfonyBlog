@@ -1,0 +1,65 @@
+{% include '/layouts/base.html.twig' %}
+<body class="">
+<div class="wrapper ">
+    {% include '/layouts/sidebar.html.twig' %}
+    <div class="main-panel">
+        <div class="content">
+            <div class="container-fluid">
+                <div class="header text-center">
+                    <h1 class="title">Posts</h1>
+                </div>
+                <div class="row">
+                    <div class="">
+                            <a href="{{ path('post_new') }}" class="btn" type="submit">Create new post!</a>
+                                    <form class="form-inline my-2 my-lg-0"  method="get">
+                                        <input class="form-control mr-sm-2" type="password" value="{{ app.request.get('search-post') }}" aria-label="Search" name="search-post">
+                                        <button class="btn btn-default my-2 my-sm-0" type="submit">Search</button>
+                                    </form>
+
+                                <table>
+                                    <tr>
+                                        <th><a href="{{ path('post_index') }}?order_key=p.title&order={{ sort == 'desc' or sort == null ? 'asc': 'desc' }}">{% trans %}title{% endtrans %} </a></th>
+                                        <th><a href="{{ path('post_index') }}?order_key=c.name&order={{ sort == 'desc' or sort == null ? 'asc': 'desc' }}">category</a></th>
+                                        <th><a href="{{ path('post_index') }}?order_key=p.created&order={{ sort == 'desc' or sort == null ? 'asc': 'desc' }}">created</a></th>
+                                        <th>Fast edit</th>
+                                        <th>Delete</th>
+
+                                    </tr>
+                                    {% for post in posts %}
+                                        <tr>
+                                            <td><a href="{{ path('post_edit', {'id': post.id}) }}">{{ post.title }}</a></td>
+                                            <td>{{ post.category }}</td>
+                                            <td>{{ post.created ? post.created|date('Y-m-d') : '' }}</td>
+
+                                            <td>
+                                                <form method="get" action="">
+                                                    <input type="hidden" name="_method" value="UPDATE">
+                                                    <button class="btn">Fast Edit</button>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <form method="post" action="{{ path('post_delete', {'id': post.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                                    <input type="hidden" name="_method" value="DELETE">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ post.id) }}">
+                                                    <button class="btn">Delete</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="3">no records found</td>
+                                        </tr>
+
+                                    {% endfor %}
+                                </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer">
+        </footer>
+    </div>
+</div>
+
+
+
