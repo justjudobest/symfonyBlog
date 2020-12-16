@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Post;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -14,6 +15,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PostRepository extends ServiceEntityRepository
 {
+    public const PAGINATOR_PER_PAGE = 5;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Post::class);
@@ -25,21 +28,21 @@ class PostRepository extends ServiceEntityRepository
      * @param $sortKey
      * @return int|mixed|string
      */
-    public function searchPost(string $value,$sort,$sortKey)
+    public function searchPost(string $value,$sort,$sortKey,int $offset) : Paginator
     {
         $qb = $this->createQueryBuilder('p')
             ->join('p.category', 'c')
             ->where('p.title LIKE :val')
             ->setParameter('val', '%'. $value. '%')
-            ->setMaxResults(10);
+            ->setMaxResults(self::PAGINATOR_PER_PAGE)
+            ->setFirstResult($offset );
         if ($sort){
             $qb->OrderBy($sortKey,$sort ?? 'ASC');
         }
-        return $qb
-            ->getQuery()
-            ->getResult();
+        return new Paginator($qb);
 
     }
+
 
 
 

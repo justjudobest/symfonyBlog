@@ -15,7 +15,7 @@
                                         <input class="form-control mr-sm-2" type="password" value="{{ app.request.get('search-post') }}" aria-label="Search" name="search-post">
                                         <button class="btn btn-default my-2 my-sm-0" type="submit">Search</button>
                                     </form>
-
+                                    <h4>All: {{ posts.count }}</h4>
                                 <table>
                                     <tr>
                                         <th><a href="{{ path('post_index') }}?order_key=p.title&order={{ sort == 'desc' or sort == null ? 'asc': 'desc' }}">{% trans %}title{% endtrans %} </a></th>
@@ -52,6 +52,19 @@
 
                                     {% endfor %}
                                 </table>
+
+                                {% if previous >= 0 %}
+                                        <a href="{{ path('post_index', {paged: previous}) }}">Previous</a>
+                                {% endif %}
+
+                                {% if next < posts|length %}
+                                        <a href="{{ path('post_index', {paged: next}) }}">Next</a>
+                                {% endif %}
+
+
+
+
+
                     </div>
                 </div>
             </div>

@@ -21,16 +21,20 @@ class PostController extends AbstractController
      */
     public function index(Request $request, PostRepository $postRepository): Response
     {
+
+        $offset = max(0, $request->query->getInt('paged', 0));
+
         $sortKey =  $request->get('order_key');
         $sort =  $request->get('order');
 
         $query = $request->get('search-post','');
-        $searchPost = $postRepository->searchPost($query,$sort,$sortKey);
+        $searchPost = $postRepository->searchPost($query,$sort,$sortKey, $offset);
 
         return $this->render('post/index.html.twig', [
             'posts' => $searchPost,
             'sort' => $sort,
-
+            'previous' => min(count($searchPost), $offset - PostRepository::PAGINATOR_PER_PAGE ),
+            'next' => min(count($searchPost), $offset + PostRepository::PAGINATOR_PER_PAGE),
         ]);
 
     }
