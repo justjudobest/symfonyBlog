@@ -21,25 +21,36 @@ class PostController extends AbstractController
      */
     public function index(Request $request, PostRepository $postRepository): Response
     {
-
         $offset = max(0, $request->query->getInt('paged'));
+        $page = 1;
+        if ($offset >= 1 ) {
+            $page = $offset;
+            $offset = $offset * PostRepository::PAGINATOR_PER_PAGE - PostRepository::PAGINATOR_PER_PAGE;
 
+        }
         $sortKey =  $request->get('order_key');
         $sort =  $request->get('order');
 
         $query = $request->get('search-post','');
         $searchPost = $postRepository->searchPost($query,$sort,$sortKey, $offset);
 
+        if ($page >  $paged = ceil($searchPost->count() / PostRepository::PAGINATOR_PER_PAGE)) {
+            return $this->redirectToRoute('post_index', ['paged'=>$paged]);
+        }
+
+
+
         return $this->render('post/index.html.twig', [
             'posts' => $searchPost,
             'sort' => $sort,
-            'previous' => min(count($searchPost), $offset - PostRepository::PAGINATOR_PER_PAGE),
-            'next' => min(count($searchPost), $offset + PostRepository::PAGINATOR_PER_PAGE),
+            'previous' => $page - 1,
+            'next' => $page + 1,
+            'offset' => $offset,
+            'limit' => PostRepository::PAGINATOR_PER_PAGE,
         ]);
 
+
     }
-
-
     /**
      * @Route("/new", name="post_new", methods={"GET","POST"})
      */

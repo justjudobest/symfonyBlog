@@ -15,7 +15,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PostRepository extends ServiceEntityRepository
 {
-    public const PAGINATOR_PER_PAGE = 5;
+    public const PAGINATOR_PER_PAGE = 3;
 
     public function __construct(ManagerRegistry $registry)
     {
@@ -35,7 +35,7 @@ class PostRepository extends ServiceEntityRepository
             ->where('p.title LIKE :val')
             ->setParameter('val', '%'. $value. '%')
             ->setMaxResults(self::PAGINATOR_PER_PAGE)
-            ->setFirstResult($offset );
+            ->setFirstResult($offset);
         if ($sort){
             $qb->OrderBy($sortKey,$sort ?? 'ASC');
         }

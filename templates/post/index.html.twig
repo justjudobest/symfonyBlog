@@ -56,15 +56,30 @@
 
                                 </table>
 
-                                {% if previous >= 0 %}
 
+{#                                {% if previous + 1 > (posts|length / limit)|round(0, 'ceil') %}#}
+{#                                    {{ path('post_index', {paged: (posts|length / limit)|round(0, 'ceil')}) }}#}
+{#                                {% endif %}#}
+
+                                {% if previous > 0 %}
                                         <a href="{{ path('post_index', {paged: previous}) }}">Previous</a>
-
+                                {% endif %}
+                                {% if previous > 1 %}
+                                        <a href="{{ path('post_index', {paged: limit - limit + 1}) }}">first</a>
                                 {% endif %}
 
-                                {% if next < posts|length %}
+                                {{ previous + 1 }} of {{ (posts|length / limit)|round(0, 'ceil') }}
+
+                                {% if offset + limit + limit < posts|length %}
+                                         <a href="{{ path('post_index', {paged: (posts|length / limit)|round(0, 'ceil')}) }}">last</a>
+                                {% endif %}
+
+                                {% if offset + limit < posts|length %}
                                         <a href="{{ path('post_index', {paged: next}) }}">Next</a>
                                 {% endif %}
+
+
+
 
 
 

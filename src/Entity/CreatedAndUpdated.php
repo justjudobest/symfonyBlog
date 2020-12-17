@@ -9,14 +9,28 @@ use Symfony\Component\Validator\Constraints as Assert;
 abstract class CreatedAndUpdated
 {
     /**
-     * @Assert\Type("\DateTime")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+    /**
+     * @ORM\Column(type="datetime")
      */
     private $created;
 
     /**
-     * @Assert\Type("\DateTime")
+     * @ORM\Column(type="datetime")
      */
     private $updated;
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     /**
      * @return \DateTimeInterface|null
@@ -30,6 +44,7 @@ abstract class CreatedAndUpdated
      * @param \DateTimeInterface $created
      * @return $this
      */
+
     public function setCreated(\DateTimeInterface $created): self
     {
         $this->created = $created;

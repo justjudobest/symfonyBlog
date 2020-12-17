@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Category;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -13,7 +14,7 @@ class CategoryType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('created')
+            ->add('created' , DateType::class, array('widget' => 'single_text'))
         ;
     }
 
