@@ -21,7 +21,7 @@ class AdminFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
 
-        for($i=1; $i<10; $i++){
+        for($i=0; $i<10; $i++) {
 
             $admin = new AdminUser();
             $admin->setEmail("jt.judo$i@mail.ru");
