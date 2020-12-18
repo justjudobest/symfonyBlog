@@ -16,9 +16,12 @@
                                         <button class="btn btn-default my-2 my-sm-0" type="submit">Search</button>
                                     </form>
                                     <h4>All({{ posts.count }})</h4>
+
+
+                        <form id="form1">
                                 <table>
                                     <tr>
-                                        <th><input type="checkbox" checked></th>
+                                        <th><input type="checkbox" name="cb_all"></th>
                                         <th><a href="{{ path('post_index') }}?order_key=p.title&order={{ sort == 'desc' or sort == null ? 'asc': 'desc' }}">{% trans %}title{% endtrans %} </a></th>
                                         <th><a href="{{ path('post_index') }}?order_key=c.name&order={{ sort == 'desc' or sort == null ? 'asc': 'desc' }}">category</a></th>
                                         <th><a href="{{ path('post_index') }}?order_key=p.created&order={{ sort == 'desc' or sort == null ? 'asc': 'desc' }}">created</a></th>
@@ -28,7 +31,8 @@
                                     </tr>
                                     {% for post in posts %}
                                         <tr>
-                                            <td><input type="checkbox" checked></td>
+
+                                            <td><input type="checkbox" name="cb" class="selectAll"></td>
                                             <td><a href="{{ path('post_edit', {'id': post.id}) }}">{{ post.title }}</a></td>
                                             <td>{{ post.category }}</td>
                                             <td>{{ post.created ? post.created|date('Y-m-d') : '' }}</td>
@@ -57,6 +61,7 @@
 
 
                                 </table>
+                        </form>
                                 {% if previous > 0 %}
                                         <a href="{{ path('post_index', {paged: previous}) }}">Previous</a>
                                 {% endif %}

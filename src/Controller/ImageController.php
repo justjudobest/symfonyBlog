@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/image")
+ * @Route("/admin/image")
  */
 class ImageController extends AbstractController
 {
@@ -39,7 +39,7 @@ class ImageController extends AbstractController
             $entityManager->persist($image);
             $entityManager->flush();
 
-            return $this->redirectToRoute('admin');
+            return $this->redirectToRoute('post_index');
         }
 
         return $this->render('image/new.html.twig', [
@@ -69,7 +69,7 @@ class ImageController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('admin');
+            return $this->redirectToRoute('post_index');
         }
 
         return $this->render('image/edit.html.twig', [
@@ -89,6 +89,6 @@ class ImageController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('admin');
+        return $this->redirectToRoute('post_index');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ImageRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -26,7 +27,6 @@ class Image
      * @ORM\Column(type="string", length=255)
      */
     private $url;
-
 
     public function getId(): ?int
     {

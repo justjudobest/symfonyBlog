@@ -38,6 +38,24 @@
   }
 })();
 
+window.onload = function()
+{
+  var select = document.getElementById('form1');
+  select.cb_all.onchange = function(e)
+  {
+    var el = e.target || e.srcElement;
+    var selectAll = el.form.getElementsByClassName('qwe');
+    for (var i =0; i<selectAll.length; i++)
+    {
+      if (el.checked)
+      {
+        selectAll[i].checked = true;
+      } else {
+        selectAll[i].checked = false;
+      }
+    }
+  }
+}
 
 var breakCards = true;
 
