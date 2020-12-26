@@ -25,9 +25,23 @@ class Category extends CreatedAndUpdated
      */
     private $name;
 
+    /**
+     *
+     * @ORM\ManyToMany(targetEntity="App\Entity\Post", mappedBy="categories")
+     * @ORM\JoinTable(name="categories_posts",
+     *     joinColumns={
+     *       @ORM\JoinColumn(name="category_id", referencedColumnName="id")
+     *     },
+     *     inverseJoinColumns={
+     *       @ORM\JoinColumn(name="post_id", referencedColumnName="id")
+     *     }
+     * )
+     */
+    protected $posts;
+
     public function __construct()
     {
-        $this->title = new ArrayCollection();
+        $this->posts = new ArrayCollection();
     }
     public function getId(): ?int
     {
@@ -47,12 +61,37 @@ class Category extends CreatedAndUpdated
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getPosts()
+    {
+        return $this->posts;
+    }
+
+    /**
+     * @param mixed $posts
+     */
+    public function setPosts($posts): void
+    {
+        $this->posts = $posts;
+    }
+
     public function __toString()
     {
         return $this->name;
     }
 
+    public function addPosts(Post $post)
+    {
+        if (!$this->posts->contains($post)) {
+            $this->posts->add($post);
+        }
+    }
 
-
+    public function removePosts(Post $post)
+    {
+        $this->posts->removeElement($post);
+    }
 
 }

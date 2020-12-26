@@ -14,7 +14,7 @@ class CategoryType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('created' , DateType::class, array('widget' => 'single_text'))
+            ->add('posts')
         ;
     }
 

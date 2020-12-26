@@ -19,6 +19,7 @@
   isWindows = navigator.platform.indexOf('Win') > -1 ? true : false;
 
   if (isWindows) {
+
     // if we are on windows OS we activate the perfectScrollbar function
     if ($(".sidebar").length != 0) {
       var ps = new PerfectScrollbar('.sidebar');
@@ -38,24 +39,7 @@
   }
 })();
 
-window.onload = function()
-{
-  var select = document.getElementById('form1');
-  select.cb_all.onchange = function(e)
-  {
-    var el = e.target || e.srcElement;
-    var selectAll = el.form.getElementsByClassName('qwe');
-    for (var i =0; i<selectAll.length; i++)
-    {
-      if (el.checked)
-      {
-        selectAll[i].checked = true;
-      } else {
-        selectAll[i].checked = false;
-      }
-    }
-  }
-}
+
 
 var breakCards = true;
 

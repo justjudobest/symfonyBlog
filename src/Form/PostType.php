@@ -2,7 +2,6 @@
 
 namespace App\Form;
 
-use App\Entity\Category;
 use App\Entity\Post;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -10,11 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\ButtonType;
-
-
-
-
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class PostType extends AbstractType
 {
@@ -25,13 +20,8 @@ class PostType extends AbstractType
             ->add('created' , DateType::class, array('widget' => 'single_text'))
             ->add('subheadline', TextType::class)
             ->add('description', TextareaType::class)
-            ->add('image' )
-            ->add('category')
-
-
-
-
-
+            ->add('image')
+            ->add('categories')
         ;
     }
 

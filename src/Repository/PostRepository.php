@@ -31,7 +31,7 @@ class PostRepository extends ServiceEntityRepository
     public function searchPost(string $value,$sort,$sortKey,int $offset) : Paginator
     {
         $qb = $this->createQueryBuilder('p')
-            ->join('p.category', 'c')
+            ->join('p.categories', 'c')
             ->where('p.title LIKE :val')
             ->setParameter('val', '%'. $value. '%')
             ->setMaxResults(self::PAGINATOR_PER_PAGE)
@@ -41,6 +41,25 @@ class PostRepository extends ServiceEntityRepository
         }
         return new Paginator($qb);
 
+    }
+
+    public function delete($id)
+    {
+        return $this->createQueryBuilder('p')
+                ->andWhere('p.id = :id')
+                ->setParameter('id',  $id)
+                ->getQuery()
+                ->getResult();
+    }
+
+    public function export()
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p.id, COUNT(c.name)')
+            ->join('p.categories', 'c')
+            ->groupBy('p.id')
+            ->getQuery()
+            ->getResult();
     }
 
 

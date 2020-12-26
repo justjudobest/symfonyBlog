@@ -44,15 +44,20 @@ class Post
     private $description;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Image::class)
+     * @ORM\Column(type="string")
      */
     private $image;
 
     /**
-     * @Assert\NotBlank()
-     * @ORM\ManyToOne(targetEntity=Category::class)
+     * @var
+     * @ORM\ManyToMany(targetEntity="App\Entity\Category", inversedBy="posts")
      */
-    private $category;
+    protected $categories;
+
+    public function __construct()
+    {
+        $this->categories = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -125,20 +130,40 @@ class Post
     }
 
     /**
-     * @return mixed
+     * @return ArrayCollection
      */
-    public function getCategory()
+    public function getCategories()
     {
-        return $this->category;
+        return $this->categories;
     }
 
     /**
-     * @param mixed $category
+     * @param mixed $categories
      */
-    public function setCategory($category): void
+    public function setCategories($categories): void
     {
-        $this->category = $category;
+        $this->categories = $categories;
     }
 
+    public function addCategories(Category $category)
+    {
+
+        $category->addPosts($this);
+        $this->categories->add($category);
+
+    }
+
+    public function removeCategories(Category $category)
+    {
+        $this->categories->removeElement($category);
+    }
+
+
+
+
+    public function __toString()
+    {
+        return $this->title;
+    }
 
 }

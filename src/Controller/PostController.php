@@ -2,13 +2,19 @@
 
 namespace App\Controller;
 
+
+use App\Entity\Category;
 use App\Entity\Post;
 use App\Form\PostType;
+use App\Repository\CategoryRepository;
 use App\Repository\PostRepository;
+use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+
+
 
 
 /**
@@ -23,22 +29,20 @@ class PostController extends AbstractController
     {
         $offset = max(0, $request->query->getInt('paged'));
         $page = 1;
-        if ($offset >= 1 ) {
+
+        if ($offset >= 1) {
             $page = $offset;
             $offset = $offset * PostRepository::PAGINATOR_PER_PAGE - PostRepository::PAGINATOR_PER_PAGE;
-
-        }
-        $sortKey =  $request->get('order_key');
-        $sort =  $request->get('order');
-
-        $query = $request->get('search-post','');
-        $searchPost = $postRepository->searchPost($query,$sort,$sortKey, $offset);
-
-        if ($page >  $paged = ceil($searchPost->count() / PostRepository::PAGINATOR_PER_PAGE)) {
-            return $this->redirectToRoute('post_index', ['paged'=>$paged]);
         }
 
+        $sortKey = $request->get('order_key');
+        $sort = $request->get('order');
+        $query = $request->get('search-post', '');
+        $searchPost = $postRepository->searchPost($query, $sort, $sortKey, $offset);
 
+        if ($page > 1 && $page > $paged = ceil($searchPost->count() / PostRepository::PAGINATOR_PER_PAGE)) {
+            return $this->redirectToRoute('post_index', ['paged' => $paged]);
+        }
 
         return $this->render('post/index.html.twig', [
             'posts' => $searchPost,
@@ -47,10 +51,10 @@ class PostController extends AbstractController
             'next' => $page + 1,
             'offset' => $offset,
             'limit' => PostRepository::PAGINATOR_PER_PAGE,
+            'paged' => $page,
         ]);
-
-
     }
+
     /**
      * @Route("/new", name="post_new", methods={"GET","POST"})
      */
@@ -72,6 +76,23 @@ class PostController extends AbstractController
             'post' => $post,
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @Route("/mass", name="post_mass", methods={"GET","POST"})
+     */
+    public function massAction(Request $request, PostRepository $postRepository): Response
+    {
+        $postId = $postRepository->findBy(['id' => $request->get('postChekbox')]);
+        foreach ($postId as $post) {
+
+            if ($post) {
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->remove($post);
+                $entityManager->flush();
+            }
+        }
+        return $this->redirectToRoute('post_index');
     }
 
     /**
@@ -109,7 +130,8 @@ class PostController extends AbstractController
      */
     public function delete(Request $request, Post $post): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$post->getId(), $request->request->get('_token'))) {
+
+        if ($this->isCsrfTokenValid('delete' . $post->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($post);
             $entityManager->flush();
@@ -117,4 +139,102 @@ class PostController extends AbstractController
 
         return $this->redirectToRoute('post_index');
     }
+
+    /**
+     * @Route("/export", name="post_export", methods={"POST"})
+     */
+    public function exportFile(PostRepository $postRepository, CategoryRepository $categoryRepository)
+    {
+
+        $postValue = $postRepository->findAll();
+        foreach ($postValue as $post) {
+            $categories = [];
+            foreach ($post->getCategories() as $category) {
+                $categories[] = $category->getName();
+            }
+            $posts[] = [
+                'title' => $post->getTitle(),
+                'date' => $post->getCreated()->format('Y-m-d'),
+                'subheadline' => $post->getSubheadline(),
+                'description' => $post->getDescription(),
+                'categories' => $categories,
+            ];
+            $response['posts'] = $posts;
+            $fp = fopen('exportPost.json', 'w');
+            fwrite($fp, (json_encode($response)));
+            fclose($fp);
+        }
+        $this->file_force_download('exportPost.json');
+
+
+
+        return $this->redirectToRoute('post_index');
+    }
+
+    /**
+     * @Route("/import", name="post_import", methods={"POST"})
+     */
+    public function importFile()
+    {
+        if (file_exists('exportPost.json')) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $filePosts = file_get_contents('exportPost.json');
+            $posts = json_decode($filePosts);
+            if (isset($posts->posts) && $posts->posts) {
+                foreach ($posts->posts as $post)
+                {
+                    $category = new Category();
+
+                    $newPost = new Post();
+                    $newPost->addCategories($category);
+                    $date = new \DateTime($post->date);
+
+                    $newPost->setCreated($date);
+                    $newPost->setTitle($post->title);
+                    $newPost->setSubheadline($post->subheadline);
+                    $newPost->setDescription($post->description);
+                    $newPost->setImage('asd.jpg');
+                    $newPost->setCategories($category);
+
+                    $entityManager->persist($category);
+                    $entityManager->persist($newPost);
+
+                }
+            }
+            echo '<pre>';
+            var_dump($category);
+            echo '</pre>';
+            die;
+            $entityManager->flush();
+            return $this->redirectToRoute('post_index');
+        }
+        else {
+            return $this->redirectToRoute('post_index');
+        }
+
+    }
+
+    function file_force_download($file) {
+        if (file_exists($file)) {
+
+            if (ob_get_level()) {
+                ob_end_clean();
+            }
+
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename=' . basename($file));
+            header('Content-Transfer-Encoding: binary');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($file));
+            readfile($file);
+            exit;
+        }
+    }
+
+
 }
+
+
