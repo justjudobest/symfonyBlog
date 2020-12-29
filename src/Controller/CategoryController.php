@@ -41,7 +41,7 @@ class CategoryController extends AbstractController
             $entityManager->persist($category);
             $entityManager->flush();
 
-            return $this->redirectToRoute('admin');
+            return $this->redirectToRoute('category_index');
         }
 
         return $this->render('category/new.html.twig', [
@@ -71,7 +71,7 @@ class CategoryController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('admin');
+            return $this->redirectToRoute('category_index');
         }
 
         return $this->render('category/edit.html.twig', [
@@ -85,14 +85,14 @@ class CategoryController extends AbstractController
      */
     public function delete(Request $request, Category $category): Response
     {
-        var_dump($category);
-        die();
+
         if ($this->isCsrfTokenValid('delete'.$category->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($category);
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('admin');
+        return $this->redirectToRoute('category_index');
     }
+
 }

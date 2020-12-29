@@ -50,7 +50,7 @@ class Post
 
     /**
      * @var
-     * @ORM\ManyToMany(targetEntity="App\Entity\Category", inversedBy="posts")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Category", inversedBy="posts", cascade={"persist"} )
      */
     protected $categories;
 
@@ -147,19 +147,14 @@ class Post
 
     public function addCategories(Category $category)
     {
-
         $category->addPosts($this);
         $this->categories->add($category);
-
     }
 
     public function removeCategories(Category $category)
     {
         $this->categories->removeElement($category);
     }
-
-
-
 
     public function __toString()
     {

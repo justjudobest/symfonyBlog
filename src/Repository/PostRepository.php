@@ -43,21 +43,11 @@ class PostRepository extends ServiceEntityRepository
 
     }
 
-    public function delete($id)
+    public function findAllPosts()
     {
         return $this->createQueryBuilder('p')
-                ->andWhere('p.id = :id')
-                ->setParameter('id',  $id)
-                ->getQuery()
-                ->getResult();
-    }
-
-    public function export()
-    {
-        return $this->createQueryBuilder('p')
-            ->select('p.id, COUNT(c.name)')
+            ->select('p.id, p.title, c.id, c.name')
             ->join('p.categories', 'c')
-            ->groupBy('p.id')
             ->getQuery()
             ->getResult();
     }

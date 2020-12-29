@@ -27,7 +27,7 @@ class Category extends CreatedAndUpdated
 
     /**
      *
-     * @ORM\ManyToMany(targetEntity="App\Entity\Post", mappedBy="categories")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Post", mappedBy="categories", cascade={"persist"})
      * @ORM\JoinTable(name="categories_posts",
      *     joinColumns={
      *       @ORM\JoinColumn(name="category_id", referencedColumnName="id")
@@ -91,6 +91,7 @@ class Category extends CreatedAndUpdated
 
     public function removePosts(Post $post)
     {
+
         $this->posts->removeElement($post);
     }
 

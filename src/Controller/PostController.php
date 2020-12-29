@@ -2,13 +2,11 @@
 
 namespace App\Controller;
 
-
-use App\Entity\Category;
+use App\Service\postService;
 use App\Entity\Post;
 use App\Form\PostType;
 use App\Repository\CategoryRepository;
 use App\Repository\PostRepository;
-use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -84,7 +82,9 @@ class PostController extends AbstractController
     public function massAction(Request $request, PostRepository $postRepository): Response
     {
         $postId = $postRepository->findBy(['id' => $request->get('postChekbox')]);
+
         foreach ($postId as $post) {
+
 
             if ($post) {
                 $entityManager = $this->getDoctrine()->getManager();
@@ -153,6 +153,7 @@ class PostController extends AbstractController
                 $categories[] = $category->getName();
             }
             $posts[] = [
+                'id' => $post->getId(),
                 'title' => $post->getTitle(),
                 'date' => $post->getCreated()->format('Y-m-d'),
                 'subheadline' => $post->getSubheadline(),
@@ -174,43 +175,12 @@ class PostController extends AbstractController
     /**
      * @Route("/import", name="post_import", methods={"POST"})
      */
-    public function importFile()
+    public function importFile(CategoryRepository $categoryRepository, PostRepository $postRepository, postService $postService)
     {
-        if (file_exists('exportPost.json')) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $filePosts = file_get_contents('exportPost.json');
-            $posts = json_decode($filePosts);
-            if (isset($posts->posts) && $posts->posts) {
-                foreach ($posts->posts as $post)
-                {
-                    $category = new Category();
 
-                    $newPost = new Post();
-                    $newPost->addCategories($category);
-                    $date = new \DateTime($post->date);
+        $postService->import($categoryRepository, $postRepository);
 
-                    $newPost->setCreated($date);
-                    $newPost->setTitle($post->title);
-                    $newPost->setSubheadline($post->subheadline);
-                    $newPost->setDescription($post->description);
-                    $newPost->setImage('asd.jpg');
-                    $newPost->setCategories($category);
-
-                    $entityManager->persist($category);
-                    $entityManager->persist($newPost);
-
-                }
-            }
-            echo '<pre>';
-            var_dump($category);
-            echo '</pre>';
-            die;
-            $entityManager->flush();
-            return $this->redirectToRoute('post_index');
-        }
-        else {
-            return $this->redirectToRoute('post_index');
-        }
+        return $this->redirectToRoute('post_index');
 
     }
 
@@ -234,7 +204,19 @@ class PostController extends AbstractController
         }
     }
 
-
+    /**
+     * @Route("/deleteall", name="categories_delete", methods={"POST"})
+     */
+    public function deleteAllCategories(CategoryRepository $categoryRepository)
+    {
+        $categoryId = $categoryRepository->findAll();
+        foreach ($categoryId as $category) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($category);
+            $entityManager->flush();
+        }
+        return $this->redirectToRoute('category_index');
+    }
 }
 
 
