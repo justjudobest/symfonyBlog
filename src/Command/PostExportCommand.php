@@ -13,15 +13,15 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class PostCommand extends Command
+class PostExportCommand extends Command
 {
-    protected static $defaultName = 'test';
+    protected static $defaultName = 'PostExport';
     private $postService;
     private $postRepository;
     private $categoryRepository;
 
     /**
-     * PostCommand constructor.
+     * PostExportCommand constructor.
      * @param PostController $postController
      * @param PostRepository $postRepository
      */
@@ -51,12 +51,12 @@ class PostCommand extends Command
 //            $io->note(sprintf('You passed an argument: %s', $arg1));
 //        }
 
-        if ($io->confirm('Do you want to import a file?')) {
-            $this->postService->import($this->categoryRepository, $this->postRepository);
-            $io->success('Posts imported!');
+        if ($io->confirm('Do you want to export a file?')) {
+            $this->postService->export($this->postRepository);
+            $io->success('Posts exported!');
         }
         else {
-            $io->error('Posts are not imported!');
+            $io->error('Posts are not exported!');
         }
 
         return Command::SUCCESS;

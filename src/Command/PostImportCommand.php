@@ -13,15 +13,15 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class PostCommand extends Command
+class PostImportCommand extends Command
 {
-    protected static $defaultName = 'test';
+    protected static $defaultName = 'PostImport';
     private $postService;
     private $postRepository;
     private $categoryRepository;
 
     /**
-     * PostCommand constructor.
+     * PostImportCommand constructor.
      * @param PostController $postController
      * @param PostRepository $postRepository
      */

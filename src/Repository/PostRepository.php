@@ -40,17 +40,31 @@ class PostRepository extends ServiceEntityRepository
             $qb->OrderBy($sortKey,$sort ?? 'ASC');
         }
         return new Paginator($qb);
-
     }
 
-    public function findAllPosts()
+    public function searchsubheadline($value)
     {
         return $this->createQueryBuilder('p')
-            ->select('p.id, p.title, c.id, c.name')
-            ->join('p.categories', 'c')
+            ->where('p.subheadline LIKE :value')
+            ->setParameter('value', '%'. $value. '%')
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @param array $id
+     * @return int
+     */
+    public function deletePosts(array $ids): int
+    {
+        $qb = $this->createQueryBuilder('p');
+
+        return $qb->delete( Post::class,'p')
+            ->where($qb->expr()->notIn('p.title', $ids))
+            ->getQuery()
+            ->execute();
+    }
+
 
 
 

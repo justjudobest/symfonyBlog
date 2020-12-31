@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\PostRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -54,9 +55,21 @@ class Post
      */
     protected $categories;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=AdminUser::class, inversedBy="posts")
+     * A
+     */
+    private $AdminUsers;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="post")
+     */
+    private $Comments;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
+        $this->Comments = new ArrayCollection();
     }
 
 
@@ -147,8 +160,11 @@ class Post
 
     public function addCategories(Category $category)
     {
-        $category->addPosts($this);
-        $this->categories->add($category);
+        if (!$this->categories->contains($category)) {
+
+            $this->categories->add($category);
+        }
+
     }
 
     public function removeCategories(Category $category)
@@ -159,6 +175,48 @@ class Post
     public function __toString()
     {
         return $this->title;
+    }
+
+    public function getAdminUsers(): ?AdminUser
+    {
+        return $this->AdminUsers;
+    }
+
+    public function setAdminUsers(?AdminUser $AdminUsers): self
+    {
+        $this->AdminUsers = $AdminUsers;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Comment[]
+     */
+    public function getComments(): Collection
+    {
+        return $this->Comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->Comments->contains($comment)) {
+            $this->Comments[] = $comment;
+            $comment->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->Comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getPost() === $this) {
+                $comment->setPost(null);
+            }
+        }
+
+        return $this;
     }
 
 }

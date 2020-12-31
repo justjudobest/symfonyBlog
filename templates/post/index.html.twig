@@ -17,17 +17,32 @@
 
                 <form action="{{ path('post_export') }}" method="post">
 
-                    <button  type="submit">export</button>
+                    <button type="submit">export</button>
                 </form>
 
                 <div class="row">
+
+                    {{ dump(posts) }}
                     <div class="">
-                            <a href="{{ path('post_new') }}" class="btn" type="submit">Create new post!</a>
-                                    <form class="form-inline my-2 my-lg-0"  method="get" action="{{ path('post_index', {'paged': paged}) }}">
-                                        <input class="form-control mr-sm-2" value="{{ app.request.get('search-post') }}" aria-label="Search" name="search-post">
-                                        <button class="btn btn-default my-2 my-sm-0" type="submit">Search</button>
-                                    </form>
-                                    <h4><a href="{{ path('post_index') }}">All({{ posts|length }})</a></h4>
+                        <a href="{{ path('post_new') }}" class="btn" type="submit">Create new post!</a>
+
+                        <form class="form-inline my-2 my-lg-0" method="get"
+                              action="{{ path('post_index', {'paged': paged}) }}">
+                            <input class="form-control mr-sm-2" value="{{ app.request.get('search-post') }}"
+                                   aria-label="Search" name="search-post">
+                            <button class="btn btn-default my-2 my-sm-0" type="submit">Search post</button>
+                        </form>
+
+
+
+                        <form class="form-inline my-2 my-lg-0" method="get"
+                              action="{{ path('post_index', {'paged': paged}) }}">
+                            <input class="form-control mr-sm-2" value="{{ app.request.get('search-subheadline') }}"
+                                   aria-label="Search" name="search-subheadline">
+                            <button class="btn btn-default my-2 my-sm-0" type="submit">Search subheadline</button>
+                        </form>
+
+                        <h4><a href="{{ path('post_index') }}">All({{ posts|length }})</a></h4>
                         <form id="form1" action="{{ path('post_mass') }}" method="post">
                             <select id="select-action" name="actions">
                                 <option value="">Select action</option>
@@ -37,19 +52,34 @@
                             <table>
                                 <tr>
                                     <th><input type="checkbox" name="cb_all" id="checkAll"></th>
-                                    <th><a href="{{ path('post_index') }}?order_key=p.title&order={{ sort == 'desc' or sort == null ? 'asc': 'desc' }}">{% trans %}title{% endtrans %} </a></th>
-                                    <th><a href="{{ path('post_index') }}?order_key=c.name&order={{ sort == 'desc' or sort == null ? 'asc': 'desc' }}">category</a></th>
-                                    <th><a href="{{ path('post_index') }}?order_key=p.created&order={{ sort == 'desc' or sort == null ? 'asc': 'desc' }}">created</a></th>
+                                    <th>
+                                        <a href="{{ path('post_index') }}?order_key=p.title&order={{ sort == 'desc' or sort == null ? 'asc': 'desc' }}">{% trans %}title{% endtrans %} </a>
+                                    </th>
+                                    <th>
+                                        <a href="{{ path('post_index') }}?order_key=c.name&order={{ sort == 'desc' or sort == null ? 'asc': 'desc' }}">category</a>
+                                    </th>
+                                    <th>
+                                        <a href="{{ path('post_index') }}?order_key=p.created&order={{ sort == 'desc' or sort == null ? 'asc': 'desc' }}">created</a>
+                                    </th>
+                                    <th>
+                                        subheadline
+                                    </th>
+                                    <th><a href="">Comments</a></th>
+                                    <th><a href="">Admin</a></th>
                                 </tr>
 
                                 {% for post in posts %}
                                     <tr>
-                                        <td><input type="checkbox" name="postChekbox[]" class="selectAll" value="{{ post.id }}"></td>
+                                        <td><input type="checkbox" name="postChekbox[]" class="selectAll"
+                                                   value="{{ post.id }}"></td>
                                         <td><a href="{{ path('post_edit', {'id': post.id}) }}">{{ post.title }}</a></td>
 
                                         <td>{% for categories in post.categories %}{{ categories }} {% endfor %}</td>
 
                                         <td>{{ post.created ? post.created|date('Y-m-d') : '' }}</td>
+                                        <td>{{ post.subheadline }}</td>
+                                        <td>{{ post.comments|length }}</td>
+                                        <td>{{ post.AdminUsers }} </td>
                                     </tr>
                                 {% else %}
                                     <tr>
@@ -58,24 +88,24 @@
                                 {% endfor %}
                             </table>
                         </form>
-                                {% if previous > 0 %}
-                                        <a href="{{ path('post_index', {paged: previous}) }}">Previous</a>
-                                {% endif %}
-                                {% if previous > 1 %}
-                                        <a href="{{ path('post_index', {paged: limit - limit + 1}) }}">first</a>
-                                {% endif %}
+                        {% if previous > 0 %}
+                            <a href="{{ path('post_index', {paged: previous}) }}">Previous</a>
+                        {% endif %}
+                        {% if previous > 1 %}
+                            <a href="{{ path('post_index', {paged: limit - limit + 1}) }}">first</a>
+                        {% endif %}
 
-                                {% if posts|length > 0  %}
-                                {{ paged }} of {{ (posts|length / limit)|round(0, 'ceil') }}
-                                {% endif %}
+                        {% if posts|length > 0 %}
+                            {{ paged }} of {{ (posts|length / limit)|round(0, 'ceil') }}
+                        {% endif %}
 
-                                {% if offset + limit + limit < posts|length %}
-                                         <a href="{{ path('post_index', {paged: (posts|length / limit)|round(0, 'ceil')}) }}">last</a>
-                                {% endif %}
+                        {% if offset + limit + limit < posts|length %}
+                            <a href="{{ path('post_index', {paged: (posts|length / limit)|round(0, 'ceil')}) }}">last</a>
+                        {% endif %}
 
-                                {% if offset + limit < posts|length %}
-                                        <a href="{{ path('post_index', {paged: next}) }}">Next</a>
-                                {% endif %}
+                        {% if offset + limit < posts|length %}
+                            <a href="{{ path('post_index', {paged: next}) }}">Next</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

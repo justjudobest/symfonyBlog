@@ -1,0 +1,48 @@
+{% include '/layouts/base.html.twig' %}
+<body class="">
+<div class="wrapper ">
+    {% include '/layouts/sidebar.html.twig' %}
+    <div class="main-panel">
+        <div class="content">
+            <div class="container-fluid">
+                <div class="header text-center">
+                    <h1 class="title">Admin Users</h1>
+                </div>
+                <div class="row">
+                    <div class="">
+                        <a href="{{ path('admin_user_new') }}" class="btn" type="submit">Create new admin!</a>
+
+{#                        <form class="form-inline my-2 my-lg-0"  method="get" action="{{ path('category_index') }}">#}
+{#                            <input class="form-control mr-sm-2" value="{{ app.request.get('search-category') }}" aria-label="Search" name="search-category">#}
+{#                            <button class="btn btn-default my-2 my-sm-0" type="submit">Search</button>#}
+{#                        </form>#}
+                        <h4> All({{ admin_users|length }})</h4>
+                        <table>
+                            <tr>
+                                <th><a href="">Email</a></th>
+                            </tr>
+                            {% for admin_user in admin_users %}
+
+                                <tr>
+                                    <td><a href="{{ path('admin_user_edit', {'id': admin_user.id}) }}">{{ admin_user.email }}</a></td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="3">no records found</td>
+                                </tr>
+
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer">
+        </footer>
+    </div>
+</div>
+
+
+
+
+

@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
-use App\Service\postService;
+use App\Repository\AdminUserRepository;
+use App\Service\postExport;
+use App\Service\postImport;
 use App\Entity\Post;
 use App\Form\PostType;
 use App\Repository\CategoryRepository;
@@ -35,15 +37,20 @@ class PostController extends AbstractController
 
         $sortKey = $request->get('order_key');
         $sort = $request->get('order');
-        $query = $request->get('search-post', '');
-        $searchPost = $postRepository->searchPost($query, $sort, $sortKey, $offset);
+        $searchPost = $request->get('search-post', '');
+        $searchSubHeadline = $request->get('search-admin','');
 
-        if ($page > 1 && $page > $paged = ceil($searchPost->count() / PostRepository::PAGINATOR_PER_PAGE)) {
+        $post = $postRepository->searchPost($searchPost, $sort, $sortKey, $offset);
+
+
+        if ($page > 1 && $page > $paged = ceil($post->count() / PostRepository::PAGINATOR_PER_PAGE)) {
             return $this->redirectToRoute('post_index', ['paged' => $paged]);
         }
 
+
+
         return $this->render('post/index.html.twig', [
-            'posts' => $searchPost,
+            'posts' => $post,
             'sort' => $sort,
             'previous' => $page - 1,
             'next' => $page + 1,
@@ -56,9 +63,12 @@ class PostController extends AbstractController
     /**
      * @Route("/new", name="post_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, AdminUserRepository  $adminUserRepository): Response
     {
         $post = new Post();
+        $adminUser = $request->getSession()->get('_security.last_username');
+        $ObjectAdminUser = $adminUserRepository->findOneBy(['email' => $adminUser]);
+        $post->setAdminUsers($ObjectAdminUser);
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
 
@@ -143,65 +153,20 @@ class PostController extends AbstractController
     /**
      * @Route("/export", name="post_export", methods={"POST"})
      */
-    public function exportFile(PostRepository $postRepository, CategoryRepository $categoryRepository)
+    public function exportFile(PostRepository $postRepository, postExport $postExport)
     {
-
-        $postValue = $postRepository->findAll();
-        foreach ($postValue as $post) {
-            $categories = [];
-            foreach ($post->getCategories() as $category) {
-                $categories[] = $category->getName();
-            }
-            $posts[] = [
-                'id' => $post->getId(),
-                'title' => $post->getTitle(),
-                'date' => $post->getCreated()->format('Y-m-d'),
-                'subheadline' => $post->getSubheadline(),
-                'description' => $post->getDescription(),
-                'categories' => $categories,
-            ];
-            $response['posts'] = $posts;
-            $fp = fopen('exportPost.json', 'w');
-            fwrite($fp, (json_encode($response)));
-            fclose($fp);
-        }
-        $this->file_force_download('exportPost.json');
-
-
-
+        $postExport->export($postRepository);
+        $postExport->file_force_download('exportPost.json');
         return $this->redirectToRoute('post_index');
     }
 
     /**
      * @Route("/import", name="post_import", methods={"POST"})
      */
-    public function importFile(CategoryRepository $categoryRepository, PostRepository $postRepository, postService $postService)
+    public function importFile(CategoryRepository $categoryRepository, PostRepository $postRepository, postImport $postService)
     {
-
         $postService->import($categoryRepository, $postRepository);
-
         return $this->redirectToRoute('post_index');
-
-    }
-
-    function file_force_download($file) {
-        if (file_exists($file)) {
-
-            if (ob_get_level()) {
-                ob_end_clean();
-            }
-
-            header('Content-Description: File Transfer');
-            header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename=' . basename($file));
-            header('Content-Transfer-Encoding: binary');
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate');
-            header('Pragma: public');
-            header('Content-Length: ' . filesize($file));
-            readfile($file);
-            exit;
-        }
     }
 
     /**
