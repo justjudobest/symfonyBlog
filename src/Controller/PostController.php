@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 
 
@@ -38,17 +39,13 @@ class PostController extends AbstractController
         $sortKey = $request->get('order_key');
         $sort = $request->get('order');
         $searchPost = $request->get('search-post', '');
-        $searchSubHeadline = $request->get('search-admin','');
-
+//        $searchSubHeadline = $request->get('search-subheadline','');
+//        $searchSubHeadline = $postRepository->searchsubheadline($searchSubHeadline);
         $post = $postRepository->searchPost($searchPost, $sort, $sortKey, $offset);
-
 
         if ($page > 1 && $page > $paged = ceil($post->count() / PostRepository::PAGINATOR_PER_PAGE)) {
             return $this->redirectToRoute('post_index', ['paged' => $paged]);
         }
-
-
-
         return $this->render('post/index.html.twig', [
             'posts' => $post,
             'sort' => $sort,
@@ -73,6 +70,28 @@ class PostController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $file = $post->getImage();
+            $fileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
+
+            if (!file_exists("upload/gallery/$fileName")) {
+                $file->move(
+                    $this->getParameter('gallery_upload'),
+                    $fileName
+                );
+                $post->setImage($fileName);
+
+            } else {
+
+                $newFileName = $fileName;
+                while ($newFileName == $fileName) {
+                    $newFileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
+                }
+                $file->move(
+                    $this->getParameter('gallery_upload'),
+                    $newFileName
+                );
+                $post->setImage($newFileName);
+            }
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($post);
             $entityManager->flush();
@@ -120,12 +139,34 @@ class PostController extends AbstractController
      */
     public function edit(Request $request, Post $post): Response
     {
+        $post->setImage('');
         $form = $this->createForm(PostType::class, $post);
-        $form->handleRequest($request);
+                $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $file = $post->getImage();
+            $fileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
 
+            if (!file_exists("upload/gallery/$fileName")) {
+                $file->move(
+                    $this->getParameter('gallery_upload'),
+                    $fileName
+                );
+                $post->setImage($fileName);
+
+            } else {
+
+                $newFileName = $fileName;
+                while ($newFileName == $fileName) {
+                    $newFileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
+                }
+                $file->move(
+                    $this->getParameter('gallery_upload'),
+                    $newFileName
+                );
+                $post->setImage($newFileName);
+            }
+            $this->getDoctrine()->getManager()->flush();
             return $this->redirectToRoute('post_index');
         }
 
@@ -181,6 +222,13 @@ class PostController extends AbstractController
             $entityManager->flush();
         }
         return $this->redirectToRoute('category_index');
+    }
+
+    private function generateUniqueFileName()
+    {
+        // md5() уменьшает схожесть имён файлов, сгенерированных
+        // uniqid(), которые основанный на временных отметках
+        return md5(uniqid());
     }
 }
 

@@ -1,0 +1,45 @@
+{% include '/layouts/base.html.twig' %}
+<body class="">
+
+<script>
+
+    function myFunction() {
+        var change = document.getElementById("toggle");
+        if (change.innerHTML == "on")
+        {
+            change.innerHTML = "off";
+        }
+        else {
+            change.innerHTML = "on";
+        }
+    }
+
+</script>
+
+<div class="wrapper ">
+    {% include '/layouts/sidebar.html.twig' %}
+    <div class="main-panel">
+        <div class="content">
+            <div class="container-fluid">
+                <div class="header text-center">
+                    <h1 class="title">Settings</h1>
+                </div>
+                <div class="row">
+                    <div class="">
+                        <form action="{{ path('commentOff') }}" method="post">
+                            Коментарии:
+                            <button id="toggle" onclick="myFunction()" type="submit" name="commentOff">on</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer">
+        </footer>
+    </div>
+</div>
+
+
+
+
+

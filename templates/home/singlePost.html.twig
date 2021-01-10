@@ -1,0 +1,230 @@
+{% include '/layouts/home/base.html.twig' %}
+
+
+<body>
+<!-- ##### Header Area Start ##### -->
+<header class="header-area">
+    <!-- Navbar Area -->
+    <div class="main-main-menu">
+        <div class="classy-nav-container breakpoint-off">
+            <div class="container-fluid">
+                <!-- Menu -->
+                <nav class="classy-navbar justify-content-between" id="mainNav">
+
+                    <!-- Nav brand -->
+                    <a href="index.html" class="nav-brand"><img src="../../assets/img/faces/favicon.png" alt=""></a>
+
+                    <!-- Navbar Toggler -->
+                    <div class="classy-navbar-toggler">
+                        <span class="navbarToggler"><span></span><span></span><span></span></span>
+                    </div>
+
+                    <!-- Menu -->
+                    <div class="classy-menu">
+
+                        <!-- close btn -->
+                        <div class="classycloseIcon">
+                            <div class="cross-wrap"><span class="top"></span><span class="bottom"></span></div>
+                        </div>
+
+                        <!-- Nav Start -->
+                        <div class="classynav">
+                            <ul>
+                                <li><a href="{{ path('home' ) }}">Home</a></li>
+                                <li><a href="#">Pages</a></li>
+                                <li><a href="#">Catagories</a></li>
+                                <li><a href="contact.html">Contact</a></li>
+                            </ul>
+
+                            <!-- Social Button -->
+                            <div class="top-social-info">
+                                <a href="#" data-toggle="tooltip" data-placement="bottom" title="Facebook"><i
+                                            class="fa fa-facebook" aria-hidden="true"></i></a>
+                                <a href="#" data-toggle="tooltip" data-placement="bottom" title="Twitter"><i
+                                            class="fa fa-twitter" aria-hidden="true"></i></a>
+                                <a href="#" data-toggle="tooltip" data-placement="bottom" title="Instagram"><i
+                                            class="fa fa-instagram" aria-hidden="true"></i></a>
+                                <a href="#" data-toggle="tooltip" data-placement="bottom" title="Pinterest"><i
+                                            class="fa fa-pinterest" aria-hidden="true"></i></a>
+                                <a href="#" data-toggle="tooltip" data-placement="bottom" title="RSS Feed"><i
+                                            class="fa fa-rss" aria-hidden="true"></i></a>
+                            </div>
+
+                        </div>
+                        <!-- Nav End -->
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- ##### Header Area End ##### -->
+<!-- ##### Blog Content Area Start ##### -->
+<section class="blog-content-area section-padding-0-100">
+    <div class="container">
+        <div class="row justify-content-center">
+            <!-- Blog Posts Area -->
+            <div class="col-12">
+
+                <!-- Post Details Area -->
+                <div class="single-post-details-area">
+                    <div class="post-content">
+
+                        <div class="text-center mb-50">
+                            <div class="post-thumbnail mb-30">
+
+                                <a href="{{ path('singlePost', {'id': post.id}) }}"><img
+                                            src="../../upload/gallery/{{ post.image }}" alt=""></a>
+                            </div>
+                            <p class="post-date">{{ post.created|date('Y-m-d') }}</p>
+                            <h2 class="post-title">{{ post.title }}</h2>
+                            <!-- Post Meta -->
+                            <div class="post-meta">
+                                <a href="#"><span>by</span> {{ post.adminusers }}</a>
+                                {% if comments.activ == 1 %}
+                                <a href="#">{{ post.comments|length }} <span>Comments</span></a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="">
+                            {{ post.description }}
+                        </div>
+                        <!-- Comment Area Start -->
+                        {% if comments.activ == 1 %}
+                        <div class="comment_area clearfix">
+                            <h4 class="headline">{{ post.comments|length }} Comments</h4>
+                            <ol>
+                                {% for comments in post.comments.snapshot %}
+                                    {% if comments.comments.snapshot == null  and comments.parent == null and comments.activ == true%}
+                                          <li class="single_comment_area">
+                                        <div class="comment-wrapper d-flex">
+                                            <!-- Comment Content -->
+                                            <div class="comment-content">
+                                                <span class="comment-date">{{ comments.created|date }}</span>
+                                                <h5>{{ comments.SenderName }}</h5>
+                                                <p>{{ comments.text }}</p>
+                                                <a href="#">Like</a>
+                                                <a class="active" href="#message">Reply</a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    {% endif %}
+                                        {% if comments.comments.snapshot != null and comments.activ == true%}
+                                        <li class="single_comment_area">
+                                            <div class="comment-wrapper d-flex">
+                                                <!-- Comment Content -->
+                                                <div class="comment-content">
+                                                    <span class="comment-date">{{ comments.created|date }}</span>
+                                                    <h5>{{ comments.SenderName }}</h5>
+                                                    <p>{{ comments.text }}</p>
+                                                    <a href="#">Like</a>
+                                                    <a class="active" href="#message">Reply</a>
+                                                </div>
+                                            </div>
+                                                {% for comment in comments.comments.snapshot %}
+                                                       <ol class="children">
+                                                <li class="single_comment_area">
+                                                    <div class="comment-wrapper d-flex">
+                                                        <!-- Comment Content -->
+                                                        <div class="comment-content">
+                                                            <span class="comment-date">{{ comment.created|date }}</span>
+                                                            <h5>{{ comment.SenderName }}</h5>
+                                                            <p>{{ comment.text }}</p>
+                                                            <a href="#">Like</a>
+                                                            <a class="active" href="#message">Reply</a>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ol>
+                                                {% endfor %}
+                                        </li>
+                                            {% else %}
+                                    {% endif %}
+                                {% endfor %}
+                            </ol>
+                        </div>
+
+                        <!-- Leave A Comment -->
+                        <div class="leave-comment-area clearfix" >
+                            <div class="comment-form">
+                                <h4 class="headline">Leave A Comment</h4>
+
+                                <!-- Comment Form -->
+                                <form action="{{ path('comment_new') }}" method="post">
+                                    <div class="row">
+                                        <div class="col-12 col-md-6">
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" name="contact-name"
+                                                       id="contact-name" placeholder="Name">
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <textarea class="form-control" name="message" id="message" cols="30"
+                                                          rows="10" placeholder="Comment"></textarea>
+                                                <textarea style="display:none" class="form-control" name="id" id="id"
+                                                          cols="30" rows="10"
+                                                          placeholder="Comment">{{ post.id }}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <button type="submit" class="btn nikki-btn" id="submit">Send Message
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+<!-- ##### Blog Content Area End ##### -->
+
+<!-- ##### Instagram Area Start ##### -->
+
+<!-- ##### Instagram Area End ##### -->
+
+<!-- ##### Footer Area Start ##### -->
+<footer class="footer-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <!-- Footer Social Info -->
+                <div class="footer-social-info d-flex align-items-center justify-content-between">
+                    <a href="#"><i class="fa fa-facebook"></i><span>Facebook</span></a>
+                    <a href="#"><i class="fa fa-twitter"></i><span>Twitter</span></a>
+                    <a href="#"><i class="fa fa-google-plus"></i><span>Google +</span></a>
+                    <a href="#"><i class="fa fa-linkedin"></i><span>linkedin</span></a>
+                    <a href="#"><i class="fa fa-instagram"></i><span>Instagram</span></a>
+                    <a href="#"><i class="fa fa-vimeo"></i><span>Vimeo</span></a>
+                    <a href="#"><i class="fa fa-youtube"></i><span>Youtube</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="copywrite-text">
+                    <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                        Copyright &copy;<script>document.write(new Date().getFullYear());</script>
+                        All rights reserved | This template is made with <i class="fa fa-heart-o"
+                                                                            aria-hidden="true"></i> by <a
+                                href="https://colorlib.com" target="_blank">Colorlib</a>
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+
+</html>

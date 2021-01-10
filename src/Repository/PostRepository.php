@@ -15,7 +15,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PostRepository extends ServiceEntityRepository
 {
-    public const PAGINATOR_PER_PAGE = 5;
+    public const PAGINATOR_PER_PAGE = 2;
 
     public function __construct(ManagerRegistry $registry)
     {
@@ -32,8 +32,8 @@ class PostRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('p')
             ->join('p.categories', 'c')
-            ->where('p.title LIKE :val')
-            ->setParameter('val', '%'. $value. '%')
+            ->Where('p.title LIKE :value')
+            ->setParameter('value', '%'. $value. '%')
             ->setMaxResults(self::PAGINATOR_PER_PAGE)
             ->setFirstResult($offset);
         if ($sort){
@@ -63,6 +63,19 @@ class PostRepository extends ServiceEntityRepository
             ->where($qb->expr()->notIn('p.title', $ids))
             ->getQuery()
             ->execute();
+    }
+
+    /**
+     * @param int $postId
+     */
+    public function findComments(int $postId)
+    {
+        return $this->createQueryBuilder('p')
+
+            ->andWhere('p.id = :value')
+            ->setParameter('value', $postId)
+            ->getQuery()
+            ->getResult();
     }
 
 

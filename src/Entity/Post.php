@@ -46,11 +46,15 @@ class Post
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\NotBlank(message="Upload your image")
+     * @Assert\Image(mimeTypes={ "image/png", "image/jpeg" })
      */
     private $image;
 
+
     /**
      * @var
+     * @Assert\NotBlank
      * @ORM\ManyToMany(targetEntity="App\Entity\Category", inversedBy="posts", cascade={"persist"} )
      */
     protected $categories;

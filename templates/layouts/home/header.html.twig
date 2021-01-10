@@ -1,0 +1,60 @@
+<header class="header-area">
+    <!-- Navbar Area -->
+    <div class="main-main-menu">
+        <div class="classy-nav-container breakpoint-off">
+            <div class="container-fluid">
+                <!-- Menu -->
+                <nav class="classy-navbar justify-content-between" id="mainNav">
+
+                    <!-- Nav brand -->
+                    <a href="index.html" class="nav-brand"><img src="../../assets/img/faces/favicon.png" alt=""></a>
+
+                    <!-- Navbar Toggler -->
+                    <div class="classy-navbar-toggler">
+                        <span class="navbarToggler"><span></span><span></span><span></span></span>
+                    </div>
+
+                    <!-- Menu -->
+                    <div class="classy-menu">
+
+                        <!-- close btn -->
+                        <div class="classycloseIcon">
+                            <div class="cross-wrap"><span class="top"></span><span class="bottom"></span></div>
+                        </div>
+
+                        <!-- Nav Start -->
+                        <div class="classynav">
+                            <ul>
+                                <li><a href="index.html">Home</a></li>
+                                <li><a href="#">Pages</a></li>
+                                <li><a href="#">Catagories</a></li>
+                                <li><a href="contact.html">Contact</a></li>
+                                <li><a href="">Register</a></li>
+                            </ul>
+
+                            <!-- Search Form -->
+                            <div class="search-form">
+                                <form action="{{ path('home', {'paged': paged}) }}" method="get">
+                                    <input type="search" name="search-post" class="form-control" placeholder="Search and hit enter..."
+                                           value="{{ app.request.get('search-post') }}" aria-label="Search">
+                                    <button type="submit"><i class="fa fa-search"></i></button>
+                                </form>
+                            </div>
+
+                            <!-- Social Button -->
+                            <div class="top-social-info">
+                                <a href="#" data-toggle="tooltip" data-placement="bottom" title="Facebook"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                                <a href="#" data-toggle="tooltip" data-placement="bottom" title="Twitter"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                                <a href="#" data-toggle="tooltip" data-placement="bottom" title="Instagram"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                                <a href="#" data-toggle="tooltip" data-placement="bottom" title="Pinterest"><i class="fa fa-pinterest" aria-hidden="true"></i></a>
+                                <a href="#" data-toggle="tooltip" data-placement="bottom" title="RSS Feed"><i class="fa fa-rss" aria-hidden="true"></i></a>
+                            </div>
+
+                        </div>
+                        <!-- Nav End -->
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>

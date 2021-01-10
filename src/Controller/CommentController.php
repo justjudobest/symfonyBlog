@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Comment;
+use App\Entity\Post;
 use App\Form\CommentType;
 use App\Repository\CommentRepository;
+use App\Repository\PostRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,32 +23,46 @@ class CommentController extends AbstractController
      */
     public function index(CommentRepository $commentRepository): Response
     {
+
         return $this->render('comment/index.html.twig', [
             'comments' => $commentRepository->findAll(),
+
+
         ]);
     }
 
     /**
-     * @Route("/new", name="comment_new", methods={"GET","POST"})
+     * @Route("/new/", name="comment_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, PostRepository $postRepository, CommentRepository $commentRepository): Response
     {
         $comment = new Comment();
-        $form = $this->createForm(CommentType::class, $comment);
-        $form->handleRequest($request);
+        $text = $request->get('message');
+        $id = $request->get('id');
+        $name = $request->get('contact-name');
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($comment);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('comment_index');
+        if ($text == '' || $name == '' || strlen($text) > 255) {
+            return $this->redirect("http://localhost/home/$id");
         }
 
-        return $this->render('comment/new.html.twig', [
-            'comment' => $comment,
-            'form' => $form->createView(),
-        ]);
+        $date = new \DateTime();
+        $comment->setCreated($date);
+        $comment->setText($text);
+        $comment->setSenderName($name);
+        $comment->setActiv(True);
+
+        $arrayPost = $postRepository->findAll();
+        foreach ($arrayPost as $objectsPost) {
+            if($objectsPost->getId() == $id) {
+                $comment->setPost($objectsPost);
+            }
+        }
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($comment);
+        $entityManager->flush();
+
+        return $this->redirect("http://localhost/home/$id");
     }
 
     /**

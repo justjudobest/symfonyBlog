@@ -10,6 +10,7 @@
                 </div>
 
 
+
                 <form action="{{ path('post_import') }}" method="post" enctype="multipart/form-data">
                     <input type="file" name="file">
                     <input type="submit">
@@ -21,8 +22,6 @@
                 </form>
 
                 <div class="row">
-
-                    {{ dump(posts) }}
                     <div class="">
                         <a href="{{ path('post_new') }}" class="btn" type="submit">Create new post!</a>
 
@@ -31,15 +30,14 @@
                             <input class="form-control mr-sm-2" value="{{ app.request.get('search-post') }}"
                                    aria-label="Search" name="search-post">
                             <button class="btn btn-default my-2 my-sm-0" type="submit">Search post</button>
-                        </form>
 
-
-
-                        <form class="form-inline my-2 my-lg-0" method="get"
-                              action="{{ path('post_index', {'paged': paged}) }}">
                             <input class="form-control mr-sm-2" value="{{ app.request.get('search-subheadline') }}"
                                    aria-label="Search" name="search-subheadline">
                             <button class="btn btn-default my-2 my-sm-0" type="submit">Search subheadline</button>
+
+                            <input class="form-control mr-sm-2" value="{{ app.request.get('search-admin') }}"
+                                   aria-label="Search" name="search-admin">
+                            <button class="btn btn-default my-2 my-sm-0" type="submit">Search admin</button>
                         </form>
 
                         <h4><a href="{{ path('post_index') }}">All({{ posts|length }})</a></h4>
@@ -66,6 +64,7 @@
                                     </th>
                                     <th><a href="">Comments</a></th>
                                     <th><a href="">Admin</a></th>
+                                    <th><a href="">Publish</a></th>
                                 </tr>
 
                                 {% for post in posts %}
@@ -80,6 +79,11 @@
                                         <td>{{ post.subheadline }}</td>
                                         <td>{{ post.comments|length }}</td>
                                         <td>{{ post.AdminUsers }} </td>
+                                        <td>
+                                            <input type="checkbox" name="publishPost" value="{{ post.id }}">
+                                            <button class="btn btn-default my-2 my-sm-0" type="submit" name="publish">Publish</button>
+
+                                        </td>
                                     </tr>
                                 {% else %}
                                     <tr>

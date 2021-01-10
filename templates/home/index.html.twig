@@ -1,0 +1,218 @@
+{% include '/layouts/home/base.html.twig' %}
+
+<body>
+{% include '/layouts/home/header.html.twig' %}
+
+<!-- ##### Blog Content Area Start ##### -->
+<section class="blog-content-area section-padding-100">
+    <div class="container">
+
+        <div class="row justify-content-center">
+            <!-- Blog Posts Area -->
+            <div class="col-12 col-lg-8">
+                <div class="blog-posts-area">
+                    <div class="row">
+                        {% for post in posts %}
+                        <!-- Featured Post Area -->
+                        <div class="col-12">
+                            <div class="featured-post-area mb-50">
+                                <!-- Thumbnail -->
+                                <div class="post-thumbnail mb-30">
+                                    <a href="{{ path('singlePost', {'id': post.id}) }}"><img src="../../upload/gallery/{{post.image}}" alt=""></a>
+                                </div>
+                                <!-- Featured Post Content -->
+                                <div class="featured-post-content">
+                                    <p class="post-date">{{ post.created|date('Y-m-d') }}</p>
+                                    <a href="{{ path('singlePost', {'id': post.id}) }}" class="post-title">
+                                        <h2>{{ post.title}}</h2>
+                                    </a>
+                                    <p class="post-excerpt">{{ post.subheadline }}</p>
+                                </div>
+                                <!-- Post Meta -->
+                                <div class="post-meta d-flex align-items-center justify-content-between">
+                                    <!-- Author Comments -->
+                                    <div class="author-comments">
+                                        <a href="#"><span>by</span> {{ post.adminusers }}</a>
+{#                                        {% if comments.activ == 1 %}#}
+                                        <a href="{{ path('singlePost', {'id': post.id}) }}">{{ post.comments|length }} <span>Comments</span></a>
+{#                                        {% endif %}#}
+                                    </div>
+                                    <!-- Social Info -->
+                                    <div class="social-info">
+                                        <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                                        <a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                                        <a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a>
+                                        <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+
+                <!-- Pager -->
+                <ol class="main-pager">
+                    {% if previous > 0 %}
+                        <a href="{{ path('home', {paged: previous}) }}">Previous</a>
+                    {% endif %}
+                    {% if previous > 1 %}
+                        <a href="{{ path('home', {paged: limit - limit + 1}) }}">first</a>
+                    {% endif %}
+
+                    {% if posts|length > 0 %}
+                        {{ paged }} of {{ (posts|length / limit)|round(0, 'ceil') }}
+                    {% endif %}
+
+                    {% if offset + limit + limit < posts|length %}
+                        <a href="{{ path('home', {paged: (posts|length / limit)|round(0, 'ceil')}) }}">last</a>
+                    {% endif %}
+
+                    {% if offset + limit < posts|length %}
+                        <a href="{{ path('home', {paged: next}) }}">Next</a>
+                    {% endif %}
+                </ol>
+            </div>
+
+            <!-- Blog Sidebar Area -->
+            <div class="col-12 col-sm-9 col-md-6 col-lg-4">
+                <div class="post-sidebar-area">
+
+
+                    <!-- ##### Single Widget Area ##### -->
+                    <div class="single-widget-area mb-30">
+                        <!-- Title -->
+                        <div class="widget-title">
+                            <h6>Latest Posts</h6>
+                        </div>
+
+                        <!-- Single Latest Posts -->
+                        <div class="single-latest-post d-flex">
+                            <div class="post-thumb">
+                                <img src="../../assets/img/faces/lp1.jpg" alt="">
+                            </div>
+                            <div class="post-content">
+                                <a href="#" class="post-title">
+                                    <h6>10 Books to Read This Summer If You Want to Improve Yourself</h6>
+                                </a>
+                                <a href="#" class="post-author"><span>by</span> Colorlib</a>
+                            </div>
+                        </div>
+
+                        <!-- Single Latest Posts -->
+                        <div class="single-latest-post d-flex">
+                            <div class="post-thumb">
+                                <img src="../../assets/img/faces/lp2.jpg" alt="">
+                            </div>
+                            <div class="post-content">
+                                <a href="#" class="post-title">
+                                    <h6>Why I Decided to Give up My Favorite Foods and Go Vegan</h6>
+                                </a>
+                                <a href="#" class="post-author"><span>by</span> Colorlib</a>
+                            </div>
+                        </div>
+
+                        <!-- Single Latest Posts -->
+                        <div class="single-latest-post d-flex">
+                            <div class="post-thumb">
+                                <img src="../../assets/img/faces/lp3.jpg" alt="">
+                            </div>
+                            <div class="post-content">
+                                <a href="#" class="post-title">
+                                    <h6>The 10 Most Instagrammable Spots in San Diego</h6>
+                                </a>
+                                <a href="#" class="post-author"><span>by</span> Colorlib</a>
+                            </div>
+                        </div>
+
+                        <!-- Single Latest Posts -->
+                        <div class="single-latest-post d-flex">
+                            <div class="post-thumb">
+                                <img src="../../assets/img/faces/lp4.jpg" alt="">
+                            </div>
+                            <div class="post-content">
+                                <a href="#" class="post-title">
+                                    <h6>5 Things to Know About Dating a Bisexual</h6>
+                                </a>
+                                <a href="#" class="post-author"><span>by</span> Colorlib</a>
+                            </div>
+                        </div>
+
+                        <!-- Single Latest Posts -->
+                        <div class="single-latest-post d-flex">
+                            <div class="post-thumb">
+                                <img src="../../assets/img/faces/lp5.jpg" alt="">
+                            </div>
+                            <div class="post-content">
+                                <a href="#" class="post-title">
+                                    <h6>How to Take Critical Feedback at Work (Like a Boss)</h6>
+                                </a>
+                                <a href="#" class="post-author"><span>by</span> Colorlib</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ##### Single Widget Area ##### -->
+
+
+                    <!-- ##### Single Widget Area ##### -->
+                    <div class="single-widget-area mb-30">
+                        <!-- Title -->
+                        <div class="widget-title">
+                            <h6>Newsletter</h6>
+                        </div>
+                        <!-- Content -->
+                        <div class="newsletter-content">
+                            <p>Subscribe our newsletter for get notification about new updates, information discount, etc.</p>
+                            <form action="#" method="post">
+                                <input type="email" name="email" class="form-control" placeholder="Your email">
+                                <button><i class="fa fa-send"></i></button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- ##### Single Widget Area ##### -->
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ##### Blog Content Area End ##### -->
+
+<!-- ##### Footer Area Start ##### -->
+<footer class="footer-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <!-- Footer Social Info -->
+                <div class="footer-social-info d-flex align-items-center justify-content-between">
+                    <a href="#"><i class="fa fa-facebook"></i><span>Facebook</span></a>
+                    <a href="#"><i class="fa fa-twitter"></i><span>Twitter</span></a>
+                    <a href="#"><i class="fa fa-google-plus"></i><span>Google +</span></a>
+                    <a href="#"><i class="fa fa-linkedin"></i><span>linkedin</span></a>
+                    <a href="#"><i class="fa fa-instagram"></i><span>Instagram</span></a>
+                    <a href="#"><i class="fa fa-vimeo"></i><span>Vimeo</span></a>
+                    <a href="#"><i class="fa fa-youtube"></i><span>Youtube</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="copywrite-text">
+                    <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                        Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+
+</html>
