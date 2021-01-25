@@ -25,21 +25,37 @@
                         <!-- Nav Start -->
                         <div class="classynav">
                             <ul>
-                                <li><a href="index.html">Home</a></li>
-                                <li><a href="#">Pages</a></li>
-                                <li><a href="#">Catagories</a></li>
-                                <li><a href="contact.html">Contact</a></li>
-                                <li><a href="">Register</a></li>
+                                <li><a href="{{ path('home') }}">Home</a></li>
+                                <li><a href="{{ path('categories') }}">Catagories</a></li>
+                                {% for staticPage in staticPages %}
+                                {% if staticPage.active == 1 %}
+                                <li><a href="{{ path('staticPage', {'title': staticPage.title}) }}">{{ staticPage.title }}</a></li>
+                                {% endif %}
+                                {% endfor %}
+                                {%if is_granted('ROLE_USER') %}
+                                <li><a href="{{ path('favorites', {'id': user.id}) }}">Favorites post</a></li>
+                                {% endif %}
+                                <li> <form action="{{ path('app_login') }}" method="post">
+                                        {% if app.user == false %}
+                                        <label for="login">Login:</label><input type="text"  name="username">
+                                        <label for="password">Password:</label><input type="password"  name="password">
+                                        <button type="submit">Login</button>
+                                        <input type="hidden" name="_csrf_token"
+                                               value="{{ csrf_token('authenticate') }}">
+                                        <li> <a href="{{ path('user_new' ) }}">Register</a> </li>
+                                        {% else %}
+                                            <li>  <a href="{{ path('user_user_edit', {'id': user.id}) }}">Edit profile</a></li>
+                                            <li>  <a href="{{ path('app_logout') }}">Logout of user {{ app.user.username }}</a></li>
+
+                                        {% endif %}
+                                    </form>
+                                </li>
+
+
                             </ul>
 
                             <!-- Search Form -->
-                            <div class="search-form">
-                                <form action="{{ path('home', {'paged': paged}) }}" method="get">
-                                    <input type="search" name="search-post" class="form-control" placeholder="Search and hit enter..."
-                                           value="{{ app.request.get('search-post') }}" aria-label="Search">
-                                    <button type="submit"><i class="fa fa-search"></i></button>
-                                </form>
-                            </div>
+
 
                             <!-- Social Button -->
                             <div class="top-social-info">

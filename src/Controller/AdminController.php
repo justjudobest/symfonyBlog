@@ -2,9 +2,7 @@
 
 namespace App\Controller;
 use App\Repository\CategoryRepository;
-use App\Repository\ImageRepository;
-use App\Repository\PostRepository;
-use App\Repository\UserRepository;
+use App\Repository\StaticPagesRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,13 +13,11 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin", name="admin")
      */
-    public function index(Request $request, CategoryRepository $categoryRepository): Response
+    public function index(): Response
     {
-
-
         return $this->render('admin/admin.html.twig', [
 
         ]);
-
     }
+
 }

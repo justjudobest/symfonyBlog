@@ -1,0 +1,50 @@
+{% include '/layouts/base.html.twig' %}
+<body class="">
+<div class="wrapper ">
+    {% include '/layouts/sidebar.html.twig' %}
+    <div class="main-panel">
+        <div class="content">
+            <div class="container-fluid">
+                <div class="header text-center">
+                    <h1 class="title">Comments</h1>
+                </div>
+                <div class="row">
+                    <div class="">
+
+
+                        <h4> All({{ countComment|length  }})</h4>
+                        <table>
+                            <tr>
+                                <th><a href="">Comments</a></th>
+                                <th><a href="">post</a></th>
+                            </tr>
+                            {% for comment in comments %}
+
+                                {% if comment.PreModeration == 0 %}
+                                <tr>
+                                    <td><a href="{{ path('comment_edit', {'id': comment.id}) }}">{{ comment.text }}</a></td>
+                                    <td>{{ comment.post }}</td>
+                                </tr>
+                                {% endif %}
+
+                                {% else %}
+
+                                <tr>
+                                    <td colspan="3">no records found</td>
+                                </tr>
+
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer">
+        </footer>
+    </div>
+</div>
+
+
+
+
+

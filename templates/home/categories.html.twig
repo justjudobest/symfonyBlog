@@ -1,0 +1,81 @@
+{% include '/layouts/home/base.html.twig' %}
+
+
+<body>
+
+<!-- ##### Header Area Start ##### -->
+{% include '/layouts/home/header.html.twig' %}
+<div class="text-left mb-50">
+    <div class="post-thumbnail mb-30">
+        <form class="form-inline my-2 my-lg-0" method="get"
+              action="{{ path('post_index', {'paged': paged}) }}">
+        </form>
+
+        {% for category in categories %}
+            <div style="margin-left: 20px">
+                <h2><a href="{{ path('categoriesPosts', {'name': category.name}) }}">{{ category.name }}</a></h2>
+            </div>
+
+        {% endfor %}
+        <div style="margin-left: 20px">
+            {% if previous > 0 %}
+                <a href="{{ path('categories', {paged: previous}) }}">Previous</a>
+            {% endif %}
+            {% if previous > 1 %}
+                <a href="{{ path('categories', {paged: limit - limit + 1}) }}">first</a>
+            {% endif %}
+
+            {% if categories|length > 0 %}
+                {{ paged }} of {{ (categories|length / limit)|round(0, 'ceil') }}
+            {% endif %}
+
+            {% if offset + limit + limit < categories|length %}
+                <a href="{{ path('categories', {paged: (categories|length / limit)|round(0, 'ceil')}) }}">last</a>
+            {% endif %}
+
+            {% if offset + limit < categories|length %}
+                <a href="{{ path('categories', {paged: next}) }}">Next</a>
+            {% endif %}
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<footer class="footer-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <!-- Footer Social Info -->
+                <div class="footer-social-info d-flex align-items-center justify-content-between">
+                    <a href="#"><i class="fa fa-facebook"></i><span>Facebook</span></a>
+                    <a href="#"><i class="fa fa-twitter"></i><span>Twitter</span></a>
+                    <a href="#"><i class="fa fa-google-plus"></i><span>Google +</span></a>
+                    <a href="#"><i class="fa fa-linkedin"></i><span>linkedin</span></a>
+                    <a href="#"><i class="fa fa-instagram"></i><span>Instagram</span></a>
+                    <a href="#"><i class="fa fa-vimeo"></i><span>Vimeo</span></a>
+                    <a href="#"><i class="fa fa-youtube"></i><span>Youtube</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="copywrite-text">
+                    <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                        Copyright &copy;<script>document.write(new Date().getFullYear());</script>
+                        All rights reserved | This template is made with <i class="fa fa-heart-o"
+                                                                            aria-hidden="true"></i> by <a
+                                href="https://colorlib.com" target="_blank">Colorlib</a>
+                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+
+</html>

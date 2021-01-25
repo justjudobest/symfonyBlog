@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit CommonFields{% endblock %}
+
+{% block body %}
+    <h1>Edit CommonFields</h1>
+
+    {{ include('common_fields/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('settings') }}">back to list</a>
+
+
+{% endblock %}

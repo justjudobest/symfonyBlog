@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\AdminUserRepository;
+use App\Repository\UserRepository;
 use App\Service\postExport;
 use App\Service\postImport;
 use App\Entity\Post;
@@ -12,8 +13,11 @@ use App\Repository\PostRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\HttpFoundation\File\File;
+use App\Service\FileUploader;
 
 
 
@@ -26,14 +30,16 @@ class PostController extends AbstractController
     /**
      * @Route("/", name="post_index", methods={"GET"})
      */
+
     public function index(Request $request, PostRepository $postRepository): Response
     {
+        $limit = 5;
         $offset = max(0, $request->query->getInt('paged'));
         $page = 1;
 
         if ($offset >= 1) {
             $page = $offset;
-            $offset = $offset * PostRepository::PAGINATOR_PER_PAGE - PostRepository::PAGINATOR_PER_PAGE;
+            $offset = $offset * $limit - $limit;
         }
 
         $sortKey = $request->get('order_key');
@@ -41,9 +47,9 @@ class PostController extends AbstractController
         $searchPost = $request->get('search-post', '');
 //        $searchSubHeadline = $request->get('search-subheadline','');
 //        $searchSubHeadline = $postRepository->searchsubheadline($searchSubHeadline);
-        $post = $postRepository->searchPost($searchPost, $sort, $sortKey, $offset);
+        $post = $postRepository->searchPost($searchPost, $sort, $sortKey, $offset,$limit);
 
-        if ($page > 1 && $page > $paged = ceil($post->count() / PostRepository::PAGINATOR_PER_PAGE)) {
+        if ($page > 1 && $page > $paged = ceil($post->count() / $limit)) {
             return $this->redirectToRoute('post_index', ['paged' => $paged]);
         }
         return $this->render('post/index.html.twig', [
@@ -52,7 +58,7 @@ class PostController extends AbstractController
             'previous' => $page - 1,
             'next' => $page + 1,
             'offset' => $offset,
-            'limit' => PostRepository::PAGINATOR_PER_PAGE,
+            'limit' => $limit,
             'paged' => $page,
         ]);
     }
@@ -70,6 +76,31 @@ class PostController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $file = $post->getImage();
+            $fileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
+
+            if (!file_exists("upload/gallery/$fileName")) {
+                $file->move(
+                    $this->getParameter('gallery_upload'),
+                    $fileName
+                );
+                $post->setImage($fileName);
+
+            } else {
+
+                $newFileName = $fileName;
+                while ($newFileName == $fileName) {
+                    $newFileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
+                }
+                $file->move(
+                    $this->getParameter('gallery_upload'),
+                    $newFileName
+                );
+                $post->setImage($newFileName);
+            }
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($post);
+            $entityManager->flush();
             $file = $post->getImage();
             $fileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
 
@@ -136,18 +167,53 @@ class PostController extends AbstractController
 
     /**
      * @Route("/{id}/edit", name="post_edit", methods={"GET","POST"})
+     * @param Request $request
+     * @param FileUploader $fileUploader
+     * @param Post $post
+     * @param UserRepository $userRepository
+     * @param MailerInterface $mailer
+     * @param $form
+     * @return Response
      */
-    public function edit(Request $request, Post $post): Response
+    public function edit(Request $request, FileUploader $fileUploader, Post $post, UserRepository $userRepository, MailerInterface $mailer, $form): Response
     {
-        $post->setImage('');
+
+        $image = $form->get('image')->getData();
+        if ($image) {
+            $imageName = $fileUploader->upload($image);
+            $post->setImage($imageName);
+        }
+
         $form = $this->createForm(PostType::class, $post);
                 $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $arrayUser =  $userRepository->findAll();
+
+            if ($form->get('activ')->getData() == True) {
+                foreach ($arrayUser as $objectUser) {
+                    if ($objectUser->getSubscription() == 1) {
+
+                        $email = (new Email())
+                            ->from('jt.judo@mail.ru')
+                            ->to($objectUser->getEmail())
+//            //->cc('cc@example.com')
+//            //->bcc('bcc@example.com')
+//            //->replyTo('fabien@example.com')
+//            //->priority(Email::PRIORITY_HIGH)
+                            ->subject('new post!')
+                            ->text('Sending emails is fun again!')
+                            ->html('<p>new post again !</p>');
+                        $mailer->send($email);
+                    }
+                }
+
+            }
             $file = $post->getImage();
             $fileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
 
             if (!file_exists("upload/gallery/$fileName")) {
+
                 $file->move(
                     $this->getParameter('gallery_upload'),
                     $fileName
@@ -230,6 +296,8 @@ class PostController extends AbstractController
         // uniqid(), которые основанный на временных отметках
         return md5(uniqid());
     }
+
+
 }
 
 

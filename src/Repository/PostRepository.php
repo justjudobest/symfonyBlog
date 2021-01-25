@@ -15,8 +15,6 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PostRepository extends ServiceEntityRepository
 {
-    public const PAGINATOR_PER_PAGE = 2;
-
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Post::class);
@@ -28,13 +26,13 @@ class PostRepository extends ServiceEntityRepository
      * @param $sortKey
      * @return int|mixed|string
      */
-    public function searchPost(string $value,$sort,$sortKey,int $offset) : Paginator
+    public function searchPost(string $value,$sort,$sortKey,int $offset,$limit) : Paginator
     {
         $qb = $this->createQueryBuilder('p')
             ->join('p.categories', 'c')
             ->Where('p.title LIKE :value')
             ->setParameter('value', '%'. $value. '%')
-            ->setMaxResults(self::PAGINATOR_PER_PAGE)
+            ->setMaxResults($limit)
             ->setFirstResult($offset);
         if ($sort){
             $qb->OrderBy($sortKey,$sort ?? 'ASC');
@@ -77,6 +75,8 @@ class PostRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+
 
 
 

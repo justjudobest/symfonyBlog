@@ -1,0 +1,39 @@
+{% include '/layouts/base.html.twig' %}
+
+{% block title %}StaticPages index{% endblock %}
+
+{% block body %}
+    <h1>StaticPages index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Text</th>
+                <th>Active</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for static_page in static_pages %}
+            <tr>
+                <td>{{ static_page.id }}</td>
+                <td>{{ static_page.title }}</td>
+                <td>{{ static_page.text }}</td>
+                <td>{{ static_page.active ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('static_pages_show', {'id': static_page.id}) }}">show</a>
+                    <a href="{{ path('static_pages_edit', {'id': static_page.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('static_pages_new') }}">Create new</a>
+{% endblock %}

@@ -1,0 +1,54 @@
+
+
+{% include '/layouts/base.html.twig' %}
+<body class="">
+<div class="wrapper ">
+    {% include '/layouts/sidebar.html.twig' %}
+    <div class="main-panel">
+        <div class="content">
+            <div class="container-fluid">
+                <div class="header text-center">
+                    <h1 class="title">Posts</h1>
+                </div>
+
+
+                <div class="row">
+                    <div class="">
+                        <a href="{{ path('restrictions_new') }}" class="btn" type="submit">Create new ban!</a>
+
+
+
+                        <h4><a href="{{ path('restrictions_index') }}">All({{ restrictions|length }})</a></h4>
+
+                            <table>
+                                <tr>
+                                      <th><a href="">Причина бана</a></th>
+                                    <th><a href="">Начало бана</a></th>
+                                    <th><a href="">Окончание бана</a></th>
+                                    <th><a href="">Пользователь</a></th>
+                                </tr>
+
+                                {% for restriction in restrictions %}
+                                    <tr>
+                                        <td><a href="{{ path('restrictions_edit', {'id': restriction.id}) }}">{{ restriction.description }}</a></td>
+                                        <td>{{ restriction.start ? restriction.start|date('Y-m-d') : '' }}</td>
+                                        <td>{{ restriction.finish ? restriction.finish|date('Y-m-d') : '' }}</td>
+                                        <td>{{ restriction.user }}</td>
+                                    </tr>
+
+                                {% endfor %}
+                            </table>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer">
+        </footer>
+    </div>
+</div>
+
+
+
+

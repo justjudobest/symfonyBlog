@@ -8,6 +8,9 @@ parameters:
     gallery_upload: '%upload_directory%/gallery'
 
 services:
+    App\Service\FileUploader:
+        arguments:
+            $targetDirectory: '%upload_directory%'
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
@@ -28,8 +31,28 @@ services:
     # as action arguments even if you don't extend any base controller class
     App\Controller\:
         resource: '../src/Controller/'
-
         tags: ['controller.service_arguments']
+
+
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    App\Security\AppCustomAuthenticator:
+        $userProvider: '@security.user.provider.concrete.app_admin_provider'
+
+    App\Security\UserAppCustomAuthenticator:
+        $userProvider: '@security.user.provider.concrete.app_user_provider'
+
+    App\Events\mailerNewPost:
+        tags:
+            - name: 'doctrine.event_listener'
+                # this is the only required option for the lifecycle listener tag
+              event: 'postPersist'
+                # listeners can define their priority in case multiple listeners are associated
+                # to the same event (default priority = 0; higher numbers = listener is run earlier)
+              priority: 500
+                # you can also restrict listeners to a specific Doctrine connection
+              connection: 'default'
+
+
+

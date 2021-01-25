@@ -3,39 +3,71 @@ security:
     encoders:
         App\Entity\AdminUser:
             algorithm: auto
+        App\Entity\User:
+            algorithm: auto
 
 
     providers:
         # used to reload user from session & other features (e.g. switch_user)
 
-        app_user_provider:
+        app_admin_provider:
             entity:
                 class: App\Entity\AdminUser
                 property: email
 
-
-
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: username
 
     firewalls:
+
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        main:
+
+        admin_secured_area:
+            pattern: ^/admin
             anonymous: ~
-            provider: app_user_provider
+            provider: app_admin_provider
+            form_login:
+                login_path: /admin/login
+                check_path: /admin/login_check
+                default_target_path: /admin/
+                username_parameter: email
+                password_parameter: password
             guard:
                 authenticators:
                     - App\Security\AppCustomAuthenticator
             logout:
-                path: app_logout
-                target: /login
+                path: app_admin_logout
+                target: /admin/login
                 # where to redirect after logout
                 # target: app_any_route
+
+        user_secured_area:
+            pattern: ^/
+            anonymous: ~
+            provider: app_user_provider
+            form_login:
+                login_path: /
+                check_path: /login_check
+                default_target_path: /
+                username_parameter: username
+                password_parameter: password
+            logout:
+                path: app_logout
+                # where to redirect after logout
+                target: /
+            guard:
+                authenticators:
+                    - App\Security\UserAppCustomAuthenticator
+
+
 
 
     access_control:
 
+        - { path: ^/admin/login, roles: IS_AUTHENTICATED_ANONYMOUSLY}
         - { path: ^/admin, roles: ROLE_ADMIN }
-
-
 

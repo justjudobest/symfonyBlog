@@ -28,7 +28,7 @@ class Post
     private $title;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="datetime")
      * @Assert\NotBlank()
      */
     private $created;
@@ -70,10 +70,26 @@ class Post
      */
     private $Comments;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $activ;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="posts")
+     */
+    private $Users;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $notRegistered;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
         $this->Comments = new ArrayCollection();
+        $this->Users = new ArrayCollection();
     }
 
 
@@ -219,6 +235,54 @@ class Post
                 $comment->setPost(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getActiv(): ?bool
+    {
+        return $this->activ;
+    }
+
+    public function setActiv(bool $activ): self
+    {
+        $this->activ = $activ;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|User[]
+     */
+    public function getUsers(): Collection
+    {
+        return $this->Users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->Users->contains($user)) {
+            $this->Users[] = $user;
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        $this->Users->removeElement($user);
+
+        return $this;
+    }
+
+    public function getNotRegistered(): ?bool
+    {
+        return $this->notRegistered;
+    }
+
+    public function setNotRegistered(bool $notRegistered): self
+    {
+        $this->notRegistered = $notRegistered;
 
         return $this;
     }

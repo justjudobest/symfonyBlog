@@ -30,14 +30,6 @@
                             <input class="form-control mr-sm-2" value="{{ app.request.get('search-post') }}"
                                    aria-label="Search" name="search-post">
                             <button class="btn btn-default my-2 my-sm-0" type="submit">Search post</button>
-
-                            <input class="form-control mr-sm-2" value="{{ app.request.get('search-subheadline') }}"
-                                   aria-label="Search" name="search-subheadline">
-                            <button class="btn btn-default my-2 my-sm-0" type="submit">Search subheadline</button>
-
-                            <input class="form-control mr-sm-2" value="{{ app.request.get('search-admin') }}"
-                                   aria-label="Search" name="search-admin">
-                            <button class="btn btn-default my-2 my-sm-0" type="submit">Search admin</button>
                         </form>
 
                         <h4><a href="{{ path('post_index') }}">All({{ posts|length }})</a></h4>
@@ -68,10 +60,12 @@
                                 </tr>
 
                                 {% for post in posts %}
+
                                     <tr>
                                         <td><input type="checkbox" name="postChekbox[]" class="selectAll"
                                                    value="{{ post.id }}"></td>
                                         <td><a href="{{ path('post_edit', {'id': post.id}) }}">{{ post.title }}</a></td>
+
 
                                         <td>{% for categories in post.categories %}{{ categories }} {% endfor %}</td>
 
@@ -80,8 +74,12 @@
                                         <td>{{ post.comments|length }}</td>
                                         <td>{{ post.AdminUsers }} </td>
                                         <td>
-                                            <input type="checkbox" name="publishPost" value="{{ post.id }}">
-                                            <button class="btn btn-default my-2 my-sm-0" type="submit" name="publish">Publish</button>
+                                            {% if post.activ == 1 %}
+                                                <img src="../../assets/img/faces/True" width="50" height="40">
+                                                {% else %}
+                                                <img src="../../assets/img/faces/False" width="50" height="40">
+                                            {% endif %}
+
 
                                         </td>
                                     </tr>

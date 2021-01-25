@@ -19,6 +19,15 @@ class CommentRepository extends ServiceEntityRepository
         parent::__construct($registry, Comment::class);
     }
 
+    public function findNoParent()
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.parent IS NULL ')
+            ->getQuery()
+            ->getResult();
+
+    }
+
 
 
 

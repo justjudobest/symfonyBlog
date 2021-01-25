@@ -21,7 +21,7 @@ class Comment
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="text")
      */
     private $text;
 
@@ -55,6 +55,17 @@ class Comment
      * @ORM\Column(type="boolean")
      */
     private $activ;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $PreModeration;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $notRegistered;
+
 
     public function __construct()
     {
@@ -169,5 +180,36 @@ class Comment
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return $this->text;
+    }
+
+    public function getPreModeration(): ?bool
+    {
+        return $this->PreModeration;
+    }
+
+    public function setPreModeration(bool $PreModeration): self
+    {
+        $this->PreModeration = $PreModeration;
+
+        return $this;
+    }
+
+    public function getNotRegistered(): ?bool
+    {
+        return $this->notRegistered;
+    }
+
+    public function setNotRegistered(bool $notRegistered): self
+    {
+        $this->notRegistered = $notRegistered;
+
+        return $this;
+    }
+
+
 
 }

@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New StaticPages{% endblock %}
+
+{% block body %}
+    <h1>Create new StaticPages</h1>
+
+    {{ include('static_pages/_form.html.twig') }}
+
+    <a href="{{ path('static_pages_index') }}">back to list</a>
+{% endblock %}

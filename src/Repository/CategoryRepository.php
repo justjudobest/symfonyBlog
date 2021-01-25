@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Category;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Repository\Search;
 
@@ -27,6 +28,34 @@ class CategoryRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function PaginationCategories($limit, $offset) : Paginator
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->join('c.posts', 'p')
+            ->setMaxResults($limit)
+            ->setFirstResult($offset);
+        return new Paginator($qb);
+    }
+
+    public function PaginationCategoriesPosts($limit, $offset, $categoryId) : Paginator
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->select('p.title, c.id')
+            ->join('c.posts', 'p')
+            ->andWhere(' c.id = :id')
+            ->setParameter('id', $categoryId)
+            ->setMaxResults($limit)
+            ->setFirstResult($offset);
+        return new Paginator($qb, false);
+    }
+
+
+
+
+
+
+
 
 
 

@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% include '/layouts/base.html.twig' %}
 
 {% block title %}User index{% endblock %}
 
@@ -9,12 +9,9 @@
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Email</th>
+                <th>Username</th>
+                <th>Roles</th>
                 <th>Password</th>
-                <th>Surname</th>
-                <th>Name</th>
-                <th>Dob</th>
-                <th>Gender</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -22,12 +19,9 @@
         {% for user in users %}
             <tr>
                 <td>{{ user.id }}</td>
-                <td>{{ user.email }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
                 <td>{{ user.password }}</td>
-                <td>{{ user.surname }}</td>
-                <td>{{ user.name }}</td>
-                <td>{{ user.dob ? user.dob|date('Y-m-d') : '' }}</td>
-                <td>{{ user.gender }}</td>
                 <td>
                     <a href="{{ path('user_show', {'id': user.id}) }}">show</a>
                     <a href="{{ path('user_edit', {'id': user.id}) }}">edit</a>
@@ -35,7 +29,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="8">no records found</td>
+                <td colspan="5">no records found</td>
             </tr>
         {% endfor %}
         </tbody>

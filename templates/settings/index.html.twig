@@ -1,20 +1,6 @@
 {% include '/layouts/base.html.twig' %}
 <body class="">
 
-<script>
-
-    function myFunction() {
-        var change = document.getElementById("toggle");
-        if (change.innerHTML == "on")
-        {
-            change.innerHTML = "off";
-        }
-        else {
-            change.innerHTML = "on";
-        }
-    }
-
-</script>
 
 <div class="wrapper ">
     {% include '/layouts/sidebar.html.twig' %}
@@ -27,11 +13,71 @@
                 <div class="row">
                     <div class="">
                         <form action="{{ path('commentOff') }}" method="post">
+
                             Коментарии:
-                            <button id="toggle" onclick="myFunction()" type="submit" name="commentOff">on</button>
+                            {% if activ == false %}
+                                <button id="toggle" type="submit" name="CommentsModeration">Выключены</button>
+                            {% else %}
+                                <button id="toggle" type="submit" name="CommentsModeration">Включены</button>
+                            {% endif %}
                         </form>
                     </div>
                 </div>
+            </div>
+            <div class="">
+
+                <form action="{{ path('CommentsModeration') }}" method="post">
+                    Модерация комментариев:
+                    {% for mod in moderation %}
+                        {% if mod.value == 1 %}
+                            <button id="toggle" type="submit" name="CommentsModeration">Включена</button>
+                        {% else %}
+                            <button id="toggle" type="submit" name="CommentsModeration">Выключена</button>
+                        {% endif %}
+                    {% endfor %}
+                </form>
+            </div>
+            <div class="">
+
+                <form action="{{ path('notRegisteredUser') }}" method="post">
+                    Включить\Выключить комиентарии для незарегистрированных пользователей:
+                    {% if notRegistered == false %}
+                        <button id="toggle" type="submit" name="notRegisteredUser">Анонимные пользователи сейчас НЕ видят комментарии</button>
+                    {% else %}
+                        <button id="toggle" type="submit" name="notRegisteredUser">Анонимные пользователи сейчас видят комментарии</button>
+                    {% endif %}
+                </form>
+            </div>
+            <div class="">
+
+                <form action="" method="post">
+                    Лого сайта:
+                    <img src="../../upload/gallery/{{ commonFields.image }}" alt="">
+
+                    <a href="{{ path('common_fields_edit',{'id': commonFields.id}) }}"> изменить</a>
+
+                </form>
+            </div>
+            <div class="">
+
+                <form action="{{ path('ChangeNameSite', {'id': commonFields.id}) }}" method="post">
+                    Название сайта:
+                    <label>
+                        <input type="text" value="{{ commonFields.name }}" name="name_site">
+                        <input type="submit" value="изменить">
+                    </label>
+
+                </form>
+            </div>
+
+            <div class="">
+                <form action="{{ path('ChangeContactsSite', {'id': commonFields.id}) }}" method="post">
+                    Контакты:
+                    <label>
+                        <input type="text" value="{{ commonFields.contacts }}" name="contacts_site">
+                        <input type="submit" value="изменить">
+                    </label>
+                </form>
             </div>
         </div>
         <footer class="footer">

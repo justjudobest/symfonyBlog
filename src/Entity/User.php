@@ -3,12 +3,15 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  */
-class User
+class User implements UserInterface
 {
     /**
      * @ORM\Id
@@ -18,38 +21,164 @@ class User
     private $id;
 
     /**
+     * @ORM\Column(type="string", length=180, unique=true)
+     */
+    private $username;
+
+    /**
+     * @ORM\Column(type="json")
+     */
+    private $roles = ['ROLE_USER'];
+
+    /**
+     * @var string The hashed password
+     * @ORM\Column(type="string")
+     */
+    private $password;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Restrictions::class, mappedBy="user")
+     */
+    private $restrictions;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $subscription;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\ManyToMany(targetEntity=Post::class, mappedBy="Users")
      */
-    private $password;
+    private $posts;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $surname;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $name;
-
-    /**
-     * @ORM\Column(type="date")
-     */
-    private $dob;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $gender;
+    public function __construct()
+    {
+        $this->permission = new ArrayCollection();
+        $this->restrictions = new ArrayCollection();
+        $this->posts = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUsername(): string
+    {
+        return (string) $this->username;
+    }
+
+    public function setUsername(string $username): self
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getPassword(): string
+    {
+        return (string) $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getSalt()
+    {
+        // not needed when using the "bcrypt" algorithm in security.yaml
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials()
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
+    }
+
+    public function __toString(): string
+    {
+        return $this->username;
+    }
+
+    /**
+     * @return Collection|Restrictions[]
+     */
+    public function getRestrictions(): Collection
+    {
+        return $this->restrictions;
+    }
+
+    public function addRestriction(Restrictions $restriction): self
+    {
+        if (!$this->restrictions->contains($restriction)) {
+            $this->restrictions[] = $restriction;
+            $restriction->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRestriction(Restrictions $restriction): self
+    {
+        if ($this->restrictions->removeElement($restriction)) {
+            // set the owning side to null (unless already changed)
+            if ($restriction->getUser() === $this) {
+                $restriction->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getSubscription(): ?bool
+    {
+        return $this->subscription;
+    }
+
+    public function setSubscription(bool $subscription): self
+    {
+        $this->subscription = $subscription;
+
+        return $this;
     }
 
     public function getEmail(): ?string
@@ -64,63 +193,31 @@ class User
         return $this;
     }
 
-    public function getPassword(): ?string
+    /**
+     * @return Collection|Post[]
+     */
+    public function getPosts(): Collection
     {
-        return $this->password;
+        return $this->posts;
     }
 
-    public function setPassword(string $password): self
+    public function addPost(Post $post): self
     {
-        $this->password = $password;
+        if (!$this->posts->contains($post)) {
+            $this->posts[] = $post;
+            $post->addUser($this);
+        }
 
         return $this;
     }
 
-    public function getSurname(): ?string
+    public function removePost(Post $post): self
     {
-        return $this->surname;
-    }
-
-    public function setSurname(string $surname): self
-    {
-        $this->surname = $surname;
+        if ($this->posts->removeElement($post)) {
+            $post->removeUser($this);
+        }
 
         return $this;
     }
 
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function getDob(): ?\DateTimeInterface
-    {
-        return $this->dob;
-    }
-
-    public function setDob(\DateTimeInterface $dd): self
-    {
-        $this->dob = $dd;
-
-        return $this;
-    }
-
-    public function getGender(): ?string
-    {
-        return $this->gender;
-    }
-
-    public function setGender(string $gender): self
-    {
-        $this->gender = $gender;
-
-        return $this;
-    }
 }

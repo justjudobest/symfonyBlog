@@ -13,40 +13,86 @@
                 <div class="blog-posts-area">
                     <div class="row">
                         {% for post in posts %}
-                        <!-- Featured Post Area -->
-                        <div class="col-12">
-                            <div class="featured-post-area mb-50">
-                                <!-- Thumbnail -->
-                                <div class="post-thumbnail mb-30">
-                                    <a href="{{ path('singlePost', {'id': post.id}) }}"><img src="../../upload/gallery/{{post.image}}" alt=""></a>
-                                </div>
-                                <!-- Featured Post Content -->
-                                <div class="featured-post-content">
-                                    <p class="post-date">{{ post.created|date('Y-m-d') }}</p>
-                                    <a href="{{ path('singlePost', {'id': post.id}) }}" class="post-title">
-                                        <h2>{{ post.title}}</h2>
-                                    </a>
-                                    <p class="post-excerpt">{{ post.subheadline }}</p>
-                                </div>
-                                <!-- Post Meta -->
-                                <div class="post-meta d-flex align-items-center justify-content-between">
-                                    <!-- Author Comments -->
-                                    <div class="author-comments">
-                                        <a href="#"><span>by</span> {{ post.adminusers }}</a>
-{#                                        {% if comments.activ == 1 %}#}
-                                        <a href="{{ path('singlePost', {'id': post.id}) }}">{{ post.comments|length }} <span>Comments</span></a>
-{#                                        {% endif %}#}
+                            {% if post.activ == 1 %}
+
+                                    {% if is_granted('ROLE_USER') == false and post.notRegistered == 1 %}
+                                    <!-- Featured Post Area -->
+                                    <div class="col-12">
+                                        <div class="featured-post-area mb-50">
+                                            <!-- Thumbnail -->
+                                            <div class="post-thumbnail mb-30">
+                                                <a href="{{ path('singlePost', {'id': post.id}) }}">
+                                                    <img src="../../upload/gallery/{{post.image}}"
+                                                         width="300" height="400" alt=""></a>
+                                            </div>
+                                            <!-- Featured Post Content -->
+                                            <div class="featured-post-content">
+                                                <p class="post-date">{{ post.created|date('Y-m-d') }}</p>
+                                                <a href="{{ path('singlePost', {'id': post.id}) }}" class="post-title">
+                                                    <h2>{{ post.title}}</h2>
+                                                </a>
+                                                <p class="post-excerpt">{{ post.subheadline }}</p>
+                                            </div>
+                                            <!-- Post Meta -->
+                                            <div class="post-meta d-flex align-items-center justify-content-between">
+                                                <!-- Author Comments -->
+                                                <div class="author-comments">
+                                                    <a href="#"><span>by</span> {{ post.adminusers }}</a>
+
+                                                    <a href="{{ path('singlePost', {'id': post.id}) }}">{{ post.comments|length }} <span>Comments</span></a>
+
+                                                </div>
+                                                <!-- Social Info -->
+                                                <div class="social-info">
+                                                    <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                                                    <a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                                                    <a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a>
+                                                    <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <!-- Social Info -->
-                                    <div class="social-info">
-                                        <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                                        <a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                                        <a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a>
-                                        <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                                    {% endif %}
+                                    {% if is_granted('ROLE_USER')%}
+                                        <!-- Featured Post Area -->
+                                        <div class="col-12">
+                                            <div class="featured-post-area mb-50">
+                                                <!-- Thumbnail -->
+                                                <div class="post-thumbnail mb-30">
+                                                    <a href="{{ path('singlePost', {'id': post.id}) }}"><img src="../../upload/gallery/{{post.image}}" alt=""></a>
+                                                </div>
+                                                <!-- Featured Post Content -->
+                                                <div class="featured-post-content">
+                                                    <p class="post-date">{{ post.created|date('Y-m-d') }}</p>
+                                                    <a href="{{ path('singlePost', {'id': post.id}) }}" class="post-title">
+                                                        <h2>{{ post.title}}</h2>
+                                                    </a>
+                                                    <p class="post-excerpt">{{ post.subheadline }}</p>
+                                                </div>
+                                                <!-- Post Meta -->
+                                                <div class="post-meta d-flex align-items-center justify-content-between">
+                                                    <!-- Author Comments -->
+                                                    <div class="author-comments">
+                                                        <a href="#"><span>by</span> {{ post.adminusers }}</a>
+
+                                                        <a href="{{ path('singlePost', {'id': post.id}) }}">{{ post.comments|length }} <span>Comments</span></a>
+
+                                                    </div>
+                                                    <!-- Social Info -->
+                                                    <div class="social-info">
+                                                        <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                                                        <a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                                                        <a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a>
+                                                        <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+
+
+                            {% endif %}
                         {% endfor %}
 
                     </div>
@@ -164,12 +210,23 @@
                             <h6>Newsletter</h6>
                         </div>
                         <!-- Content -->
-                        <div class="newsletter-content">
-                            <p>Subscribe our newsletter for get notification about new updates, information discount, etc.</p>
-                            <form action="#" method="post">
-                                <input type="email" name="email" class="form-control" placeholder="Your email">
-                                <button><i class="fa fa-send"></i></button>
-                            </form>
+                        <div class="">
+
+
+                            <p>При публикации нового поста, вам на почту будет приходить письмо!</p>
+                            {% if is_granted('ROLE_USER') == 1 %}
+                                {% if user.subscription == false %}
+                                <form action="{{ path('subscription') }}" method="post">
+                                    <button> подписаться </button>
+                                </form>
+                                {% else %}
+                                <form action="{{ path('subscription') }}" method="post">
+                                    <button> отписаться </button>
+                                </form>
+                                {% endif %}
+                            {% endif %}
+
+
                         </div>
                     </div>
 

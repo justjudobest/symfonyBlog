@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 /**
- * @Route("/admin/user")
+ * @Route("/admin/adminUser")
  */
 class AdminUserController extends AbstractController
 {
@@ -39,8 +39,6 @@ class AdminUserController extends AbstractController
     public function new(Request $request): Response
     {
         $adminUser = new AdminUser();
-
-
         $form = $this->createForm(AdminUserType::class, $adminUser);
         $form->handleRequest($request);
 
@@ -80,6 +78,8 @@ class AdminUserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $password = $form->get('password')->getData();
+            $adminUser->setPassword($this->passwordEncoder->encodePassword($adminUser, $password));
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('admin_user_index');
